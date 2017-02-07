@@ -1,68 +1,61 @@
 package go.wikipedi.wikipedigo.fragment;
 
+import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
+import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.IgnoreWhen;
 import org.androidannotations.annotations.ViewById;
 
-import java.util.List;
-
 import go.wikipedi.base.BaseRunnable;
+import go.wikipedi.base.Common;
 import go.wikipedi.base.OnItemSelectedListener;
 import go.wikipedi.base.OnLastItemVisibleListener;
 import go.wikipedi.wikipedigo.R;
 import go.wikipedi.wikipedigo.adapter.PhotosAdapter;
 import go.wikipedi.wikipedigo.contoller.PhotosController;
 import go.wikipedi.wikipedigo.model.Photo;
+import io.realm.RealmList;
+
 
 @EFragment(R.layout.fragment_photo_list)
 public class PhotoListFragment extends BaseFragment {
 
-	public PhotoListFragment() {
-		// Required empty public constructor
-	}
-
-	private boolean isImageFullscreen;
+	private String search;
 	private GridLayoutManager layoutManager;
 	private PhotosAdapter adapter;
 	private SearchView searchView;
+	private MenuItem searchItem;
 
 	//region annotations
-	@ViewById(R.id.img_full)
-	ImageView fullImage;
-
 	@ViewById(R.id.rv_container)
 	RecyclerView container;
-
 	@ViewById(R.id.content)
 	SwipeRefreshLayout swipeRefreshLayout;
-
 	@ViewById(R.id.tv_alert)
 	TextView alertText;
+	@ViewById
+	ProgressBar onLoading;
 
 	@AfterViews
 	void initViews() {
-		setHasOptionsMenu(true);
-
-		fullImage.setVisibility(View.GONE);
-		isImageFullscreen = false;
-		alertText.setVisibility(View.GONE);
-
+		PhotosController.getInstance().getData();
 		adapter = new PhotosAdapter(getContext(), PhotosController.getInstance().getPhotos());
 		adapter.setOnItemSelectedListener(onItemSelected);
 		adapter.setOnLastItemVisibleListener(onLastItemVisible);
@@ -78,41 +71,37 @@ public class PhotoListFragment extends BaseFragment {
 				}
 			}
 		});
-		PhotosController.getInstance().fetchPhotos(new Runnable() {
-			@Override
-			public void run() {
-				adapter.setItems(PhotosController.getInstance().getPhotos());
-			}
-		});
+		if (PhotosController.getInstance().getPhotos().size() == 0) {
+			initPhotos();
+		}
 		swipeRefreshLayout.setOnRefreshListener(onUpdatePhotos);
+	}
+
+	@IgnoreWhen(IgnoreWhen.State.VIEW_DESTROYED)
+	void setLoading(boolean loading) {
+		onLoading.setVisibility(loading ? View.VISIBLE : View.GONE);
+		container.setVisibility(loading ? View.GONE : View.VISIBLE);
 	}
 	//endregion
 
-	void toggleImageFull(Photo photo) {
-		isImageFullscreen = !isImageFullscreen;
-		if (isImageFullscreen) {
-			container.setVisibility(View.GONE);
-			fullImage.setVisibility(View.VISIBLE);
-			swipeRefreshLayout.setEnabled(false);
-			Glide.with(this)
-					.load(photo.getImage())
-					.animate(R.anim.grow_from_middle)
-					.diskCacheStrategy(DiskCacheStrategy.ALL)
-					.into(fullImage);
-		} else {
-			container.setVisibility(View.VISIBLE);
-			fullImage.setVisibility(View.GONE);
-		}
+	void showFullImage(Photo photo) {
+		FragmentTransaction ft = getFragmentManager().beginTransaction();
+		PhotoDetailFragment fragment = new PhotoDetailFragment_();
+		Bundle bundle = new Bundle();
+		bundle.putParcelable("photo", photo);
+		fragment.setArguments(bundle);
+		ft.replace(R.id.fragmentContainer, fragment);
+		ft.addToBackStack(null);
+		ft.commit();
 	}
 
 	void searchPhoto(String query) {
 		if (query.trim().length() == 0) {
-			alertText.setVisibility(View.GONE);
 			adapter.setItems(PhotosController.getInstance().getPhotos());
 		} else {
-			PhotosController.getInstance().searchPhotos(query, new BaseRunnable<List<Photo>>() {
+			PhotosController.getInstance().searchPhotos(query, new BaseRunnable<RealmList<Photo>>() {
 				@Override
-				public void run(List<Photo> object) {
+				public void run(RealmList<Photo> object) {
 					if (object.size() == 0) {
 						alertText.setVisibility(View.VISIBLE);
 					} else {
@@ -124,15 +113,32 @@ public class PhotoListFragment extends BaseFragment {
 		}
 	}
 
-
 	//region override methods
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		setHasOptionsMenu(true);
+		((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getString(R.string.app_name));
+		((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+		return null;
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.search_bar, menu);
+		super.onCreateOptionsMenu(menu, inflater);
+		searchItem = menu.findItem(R.id.action_find);
+		searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+		searchView.setQueryHint(getString(R.string.text_search_igo));
+		searchView.setOnQueryTextListener(onSearchPhoto);
+		if (getArguments().getString("query") != null && !getArguments().getString("query").equals("")) {
+			searchItem.expandActionView();
+			searchView.setQuery(getArguments().getString("query"), false);
+		}
+	}
+
 	@Override
 	public boolean onBackPressed() {
 		swipeRefreshLayout.setEnabled(true);
-		if (isImageFullscreen) {
-			toggleImageFull(null);
-			return true;
-		}
 		if (swipeRefreshLayout.isRefreshing()) {
 			swipeRefreshLayout.setRefreshing(false);
 			return true;
@@ -141,29 +147,40 @@ public class PhotoListFragment extends BaseFragment {
 	}
 
 	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		inflater.inflate(R.menu.search_bar, menu);
-		super.onCreateOptionsMenu(menu, inflater);
-		MenuItem searchItem = menu.findItem(R.id.action_find);
-		searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-		searchView.setQueryHint(getString(R.string.text_search_igo));
-		searchView.setOnQueryTextListener(onSearchPhoto);
+	public void onResume() {
+		if (searchItem != null) {
+			Bundle saved = getArguments();
+			searchView.setQuery(saved.getString("query"), false);
+			container.getLayoutManager().onRestoreInstanceState(saved.getParcelable("list"));
+		}
+		super.onResume();
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		int id = item.getItemId();
-		switch (id) {
-			case R.id.action_find:
-				if (isImageFullscreen) {
-					toggleImageFull(null);
-				}
-				super.onOptionsItemSelected(item);
-				break;
-			default:
-				break;
-		}
-		return false;
+	public void onPause() {
+		Bundle saved = getArguments();
+		saved.putString("query", search);
+		saved.putParcelable("list", container.getLayoutManager().onSaveInstanceState());
+		super.onPause();
+	}
+	//endregion
+
+	//region Private methods
+	private void initPhotos() {
+		setLoading(true);
+		PhotosController.getInstance().fetchPhotos(new Runnable() {
+			@Override
+			public void run() {
+				adapter.setItems(PhotosController.getInstance().getPhotos());
+				setLoading(false);
+			}
+		}, new Runnable() {
+			@Override
+			public void run() {
+				adapter.setItems(PhotosController.getInstance().getPhotos());
+				setLoading(false);
+			}
+		});
 	}
 	//endregion
 
@@ -171,7 +188,7 @@ public class PhotoListFragment extends BaseFragment {
 	OnItemSelectedListener onItemSelected = new OnItemSelectedListener() {
 		@Override
 		public void onItemSelected(int position) {
-			toggleImageFull(adapter.getItem(position));
+			showFullImage(adapter.getItem(position));
 		}
 	};
 
@@ -185,12 +202,14 @@ public class PhotoListFragment extends BaseFragment {
 	SearchView.OnQueryTextListener onSearchPhoto = new SearchView.OnQueryTextListener() {
 		@Override
 		public boolean onQueryTextSubmit(String query) {
+			search = query;
 			searchPhoto(query);
 			return false;
 		}
 
 		@Override
 		public boolean onQueryTextChange(String newText) {
+			search = newText;
 			searchPhoto(newText);
 			return false;
 		}
@@ -199,17 +218,19 @@ public class PhotoListFragment extends BaseFragment {
 	SwipeRefreshLayout.OnRefreshListener onUpdatePhotos = new SwipeRefreshLayout.OnRefreshListener() {
 		@Override
 		public void onRefresh() {
-			if (isImageFullscreen) {
-				swipeRefreshLayout.setRefreshing(false);
-			} else {
-				PhotosController.getInstance().updatePhotos(new Runnable() {
-					@Override
-					public void run() {
-						swipeRefreshLayout.setRefreshing(false);
-						adapter.notifyDataSetChanged();
-					}
-				});
-			}
+			PhotosController.getInstance().updatePhotos(new Runnable() {
+				@Override
+				public void run() {
+					swipeRefreshLayout.setRefreshing(false);
+					adapter.notifyDataSetChanged();
+				}
+			}, new Runnable() {
+				@Override
+				public void run() {
+					swipeRefreshLayout.setRefreshing(false);
+					Common.getInstance().showSnackbar(getActivity(), getString(R.string.no_internet));
+				}
+			});
 		}
 	};
 	//endregion

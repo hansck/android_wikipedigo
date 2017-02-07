@@ -28,7 +28,6 @@
 -dontwarn java.nio.file.**
 -dontwarn org.codehaus.mojo.**
 -dontwarn retrofit2.**
--dontwarn com.flurry.**
 
 # Preserve this classes
 -keep class * extends android.app.Activity

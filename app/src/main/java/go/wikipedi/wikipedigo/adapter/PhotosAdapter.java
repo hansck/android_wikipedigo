@@ -5,8 +5,6 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.List;
-
 import go.wikipedi.base.OnItemSelectedListener;
 import go.wikipedi.base.OnLastItemVisibleListener;
 import go.wikipedi.base.RecyclerViewAdapterBase;
@@ -14,6 +12,7 @@ import go.wikipedi.base.ViewWrapper;
 import go.wikipedi.wikipedigo.model.Photo;
 import go.wikipedi.wikipedigo.view.ItemPhotoView;
 import go.wikipedi.wikipedigo.view.ItemPhotoView_;
+import io.realm.RealmList;
 
 /**
  * Created by E460 on 17/01/2017.
@@ -27,7 +26,7 @@ public class PhotosAdapter extends RecyclerViewAdapterBase<Photo, ItemPhotoView>
 	private OnItemSelectedListener onItemSelectedListener;
 	private OnLastItemVisibleListener onLastItemVisibleListener;
 
-	public PhotosAdapter(Context context, List<Photo> items) {
+	public PhotosAdapter(Context context, RealmList<Photo> items) {
 		super(context, items);
 		itemCount = MAX_ITEM;
 	}
@@ -59,7 +58,7 @@ public class PhotosAdapter extends RecyclerViewAdapterBase<Photo, ItemPhotoView>
 		}
 	}
 
-	public void setItems(List<Photo> items) {
+	public void setItems(RealmList<Photo> items) {
 		this.items = items;
 		resetItemCount();
 		notifyDataSetChanged();
@@ -68,11 +67,14 @@ public class PhotosAdapter extends RecyclerViewAdapterBase<Photo, ItemPhotoView>
 	@Override
 	@Nullable
 	public Photo getItem(int position) {
-		if (items.size() > 0) {
-			return items.get(position);
-		} else {
-			return null;
+		if (items != null) {
+			if (items.size() > 0) {
+				return items.get(position);
+			} else {
+				return null;
+			}
 		}
+		return null;
 	}
 
 	@Override

@@ -6,25 +6,13 @@
 	android:layout_height="match_parent"
 	android:paddingLeft="@dimen/margin_tiny"
 	android:paddingRight="@dimen/margin_tiny"
-	tools:context="go.wikipedi.wikipedigo.activity.MainActivity_"
-	>
+	tools:context="go.wikipedi.wikipedigo.activity.MainActivity_">
 
 	<RelativeLayout
 		android:id="@+id/innerLayout"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:orientation="vertical">
-
-		<ImageView
-			android:id="@+id/img_full"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			android:layout_centerHorizontal="true"
-			android:adjustViewBounds="true"
-			android:paddingBottom="@dimen/margin_tiny"
-			android:paddingTop="@dimen/margin_tiny"
-			android:scaleType="fitCenter"
-			tools:ignore="ContentDescription"/>
 
 		<android.support.v7.widget.RecyclerView
 			android:id="@+id/rv_container"
@@ -38,8 +26,13 @@
 			android:layout_below="@id/rv_container"
 			android:layout_marginTop="@dimen/margin_small"
 			android:gravity="center_horizontal"
-			android:text="@string/text_igo_not_found"
-			/>
+			android:text="@string/text_igo_not_found"/>
+
+		<ProgressBar
+			android:id="@+id/onLoading"
+			style="@style/ProgressBar"
+			android:layout_below="@id/rv_container"
+			android:visibility="gone"/>
 
 	</RelativeLayout>
 </android.support.v4.widget.SwipeRefreshLayout>

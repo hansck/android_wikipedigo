@@ -1,17 +1,15 @@
 package go.wikipedi.wikipedigo.contoller;
 
-import android.content.SharedPreferences;
-
-import com.google.gson.reflect.TypeToken;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 
 import go.wikipedi.base.BaseRunnable;
 import go.wikipedi.base.api.APIRequest;
 import go.wikipedi.wikipedigo.model.Photo;
-import go.wikipedi.wikipedigo.model.URLInfo;
+import io.realm.Case;
+import io.realm.Realm;
+import io.realm.RealmList;
+import io.realm.RealmResults;
+import io.realm.Sort;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -22,103 +20,88 @@ import retrofit2.Response;
 
 public class PhotosController {
 
-	private static final String FETCH_ERROR = "Error while fetching photos";
-	private static final String PHOTOS_COLUMN = "photosColumn";
-	private static final Type PHOTOS_TYPE = new TypeToken<List<Photo>>(){}.getType();
-
-	public static final String PHOTOS_PREF = "photosPreference";
-
-	//region singleton
+	private RealmList<Photo> photos = new RealmList<>();
+	private Realm realm = Realm.getDefaultInstance();
 	private static PhotosController instance = new PhotosController();
 
 	private PhotosController() {
+
 	}
 
 	public static PhotosController getInstance() {
 		return instance;
 	}
-	//endregion
 
-	private SharedPreferences sharedPreferences;
-	private List<Photo> photos = new ArrayList<>();
-	private URLInfo urlInfo;
-
-	public void fetchPhotos(final Runnable onSuccess) {
+	public void fetchPhotos(final Runnable onSuccess, final Runnable onFailure) {
 		APIRequest.getInstance().getService().getPhotos().enqueue(new Callback<List<Photo>>() {
 			@Override
 			public void onResponse(Call<List<Photo>> call, Response<List<Photo>> response) {
-				if (sharedPreferences != null) {
-					String json = APIRequest.getInstance().getGson().toJson(response.body(), PHOTOS_TYPE);
-					if (!json.equals("")) {
-						sharedPreferences.edit().putString(PHOTOS_COLUMN, json).commit();
-					}
-				}
-				photos = response.body();
+				photos = new RealmList<>(response.body().toArray(new Photo[response.body().size()]));
+				insertData();
 				onSuccess.run();
 			}
 
 			@Override
 			public void onFailure(Call<List<Photo>> call, Throwable t) {
 				t.printStackTrace();
-				if (sharedPreferences != null) {
-					String json = sharedPreferences.getString(PHOTOS_COLUMN, "");
-					if (!json.equals("")) {
-						photos = APIRequest.getInstance().getGson().fromJson(json, PHOTOS_TYPE);
-					}
-				}
+				getData();
+				onFailure.run();
 			}
 		});
 	}
 
-	public void updatePhotos(final Runnable onSuccess) {
+	public void updatePhotos(final Runnable onSuccess, final Runnable onFailure) {
 		APIRequest.getInstance().getService().getPhotos().enqueue(new Callback<List<Photo>>() {
 			@Override
 			public void onResponse(Call<List<Photo>> call, Response<List<Photo>> response) {
-				if (sharedPreferences != null) {
-					String json = APIRequest.getInstance().getGson().toJson(response.body(), PHOTOS_TYPE);
-					if (!json.equals("")) {
-						sharedPreferences.edit().putString(PHOTOS_COLUMN, json).commit();
-					}
-				}
-				List<Photo> newPhotos = response.body();
-				int i = 0;
-				while (!newPhotos.get(i).getImage().contentEquals(photos.get(i).getImage())) {
-					photos.add(i, newPhotos.get(i));
-					i += 1;
-				}
+				photos = new RealmList<>(response.body().toArray(new Photo[response.body().size()]));
+				insertData();
 				onSuccess.run();
 			}
 
 			@Override
 			public void onFailure(Call<List<Photo>> call, Throwable t) {
 				t.printStackTrace();
-				if (sharedPreferences != null) {
-					String json = sharedPreferences.getString(PHOTOS_COLUMN, "");
-					if (!json.equals("")) {
-						photos = APIRequest.getInstance().getGson().fromJson(json, PHOTOS_TYPE);
+				onFailure.run();
+			}
+		});
+	}
+
+	private void insertData() {
+		realm.executeTransaction(new Realm.Transaction() {
+			@Override
+			public void execute(Realm bgRealm) {
+				if (realm.where(Photo.class).count() != photos.size()) {
+					clearData();
+					for (Photo photo : photos) {
+						if (realm.where(Photo.class).equalTo("image", photo.getImage()).count() == 0) {
+							realm.copyToRealmOrUpdate(photos);
+						}
 					}
 				}
 			}
 		});
 	}
 
-	public void setSharedPreferences(SharedPreferences sharedPreferences) {
-		if (sharedPreferences == null) {
-			this.sharedPreferences = sharedPreferences;
-		}
+	public void getData() {
+		RealmResults<Photo> results = realm.where(Photo.class).findAll();
+		photos.addAll(results.subList(0, results.size()));
 	}
 
-	public void searchPhotos(String query, BaseRunnable<List<Photo>> onFound) {
-		List<Photo> result = new ArrayList<>();
-		for (int i = 0; i < photos.size(); i++) {
-			if (photos.get(i).isContains(query)) {
-				result.add(photos.get(i));
-			}
-		}
+	private void clearData() {
+		realm.beginTransaction();
+		realm.delete(Photo.class);
+		realm.commitTransaction();
+	}
+
+	public void searchPhotos(String query, BaseRunnable<RealmList<Photo>> onFound) {
+		RealmResults<Photo> realmResults = realm.where(Photo.class).contains("name", query, Case.INSENSITIVE).findAllSorted("name", Sort.ASCENDING);
+		RealmList<Photo> result = new RealmList<>();
+		result.addAll(realmResults.subList(0, realmResults.size()));
 		onFound.run(result);
 	}
 
-	public List<Photo> getPhotos() {
+	public RealmList<Photo> getPhotos() {
 		return photos;
 	}
 }
