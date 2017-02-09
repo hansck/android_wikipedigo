@@ -12,29 +12,27 @@ import org.androidannotations.annotations.ViewById;
 
 import go.wikipedi.wikipedigo.R;
 
-/**
- * Created by E460 on 18/01/2017.
- */
-
-@EViewGroup(R.layout.item_personal_photo)
-public class ItemPersonalPhotoView extends RelativeLayout{
+@EViewGroup(R.layout.item_photo_list)
+public class ItemAlbumView extends RelativeLayout {
 
 	private Context context;
 
-	@ViewById(R.id.img_photo)
-	ImageView imgPhoto;
+	@ViewById
+	RelativeLayout background;
+	@ViewById
+	ImageView photo;
 
-	public ItemPersonalPhotoView(Context context) {
+	public ItemAlbumView(Context context) {
 		super(context);
 		this.context = context;
 	}
 
 	public void bind(String url) {
-		Glide
-				.with(context)
+		Glide.with(context)
 				.load(url)
+				.animate(R.anim.grow_from_middle)
 				.placeholder(R.drawable.ic_face)
 				.diskCacheStrategy(DiskCacheStrategy.ALL)
-				.into(imgPhoto);
+				.into(photo);
 	}
 }

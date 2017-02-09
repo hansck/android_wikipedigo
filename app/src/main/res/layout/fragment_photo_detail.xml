@@ -1,15 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical">
 
-	<ImageView
-		android:id="@+id/img_full"
+	<RelativeLayout
+		android:id="@+id/listContainer"
 		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:adjustViewBounds="true"
-		android:paddingBottom="@dimen/margin_tiny"
-		android:paddingTop="@dimen/margin_tiny"
-		android:scaleType="fitCenter"/>
-</LinearLayout>
+		android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+		android:layout_marginTop="@dimen/item_padding">
+
+		<TextView
+			android:id="@+id/labelGallery"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:paddingLeft="20dp"
+			android:paddingRight="20dp"
+			android:text="@string/gallery"
+			android:textColor="@color/black"
+			android:textSize="20dp"/>
+
+		<android.support.v7.widget.RecyclerView
+			android:id="@+id/imageList"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_below="@id/labelGallery"
+			android:layout_marginLeft="@dimen/item_padding"
+			android:layout_marginRight="@dimen/item_padding"
+			android:layout_marginTop="5dp"
+			android:scrollbars="horizontal"/>
+
+		<com.viewpagerindicator.CirclePageIndicator
+			android:id="@+id/index"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_below="@id/imageList"
+			android:layout_centerHorizontal="true"
+			android:layout_marginTop="5dp"
+			android:paddingBottom="@dimen/item_padding"
+			app:fillColor="@color/dark_grey"/>
+	</RelativeLayout>
+
+	<RelativeLayout
+		android:id="@+id/slideContainer"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_above="@id/listContainer">
+
+		<android.support.v4.view.ViewPager
+			android:id="@+id/currentPhoto"
+			android:layout_width="match_parent"
+			android:layout_height="400dp"/>
+	</RelativeLayout>
+</RelativeLayout>

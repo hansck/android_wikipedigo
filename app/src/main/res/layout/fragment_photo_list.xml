@@ -26,7 +26,8 @@
 			android:layout_below="@id/rv_container"
 			android:layout_marginTop="@dimen/margin_small"
 			android:gravity="center_horizontal"
-			android:text="@string/text_igo_not_found"/>
+			android:text="@string/text_igo_not_found"
+			android:visibility="gone"/>
 
 		<ProgressBar
 			android:id="@+id/onLoading"

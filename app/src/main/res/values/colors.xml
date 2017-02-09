@@ -7,4 +7,6 @@
 	<color name="black">#000</color>
 	<color name="hearth">#E81C4F</color>
 	<color name="white">#fff</color>
+	<color name="border">#C3D7D7</color>
+	<color name="dark_grey">#424242</color>
 </resources>

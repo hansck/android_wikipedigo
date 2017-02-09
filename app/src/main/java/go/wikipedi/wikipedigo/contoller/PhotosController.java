@@ -37,7 +37,9 @@ public class PhotosController {
 			@Override
 			public void onResponse(Call<List<Photo>> call, Response<List<Photo>> response) {
 				photos = new RealmList<>(response.body().toArray(new Photo[response.body().size()]));
-				insertData();
+				if (realm.where(Photo.class).count() != photos.size()) {
+					insertData();
+				}
 				onSuccess.run();
 			}
 
@@ -55,7 +57,9 @@ public class PhotosController {
 			@Override
 			public void onResponse(Call<List<Photo>> call, Response<List<Photo>> response) {
 				photos = new RealmList<>(response.body().toArray(new Photo[response.body().size()]));
-				insertData();
+				if (realm.where(Photo.class).count() != photos.size()) {
+					insertData();
+				}
 				onSuccess.run();
 			}
 
@@ -71,12 +75,11 @@ public class PhotosController {
 		realm.executeTransaction(new Realm.Transaction() {
 			@Override
 			public void execute(Realm bgRealm) {
-				if (realm.where(Photo.class).count() != photos.size()) {
-					clearData();
-					for (Photo photo : photos) {
-						if (realm.where(Photo.class).equalTo("image", photo.getImage()).count() == 0) {
-							realm.copyToRealmOrUpdate(photos);
-						}
+				for (Photo photo : photos) {
+					if (realm.where(Photo.class).equalTo("image", photo.getImage()).count() == 0) {
+						realm.copyToRealmOrUpdate(photos);
+					} else {
+						break;
 					}
 				}
 			}
@@ -84,7 +87,7 @@ public class PhotosController {
 	}
 
 	public void getData() {
-		RealmResults<Photo> results = realm.where(Photo.class).findAll();
+		RealmResults<Photo> results = realm.where(Photo.class).findAllSorted("createdAt", Sort.DESCENDING);
 		photos.addAll(results.subList(0, results.size()));
 	}
 

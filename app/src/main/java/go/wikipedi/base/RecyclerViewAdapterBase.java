@@ -17,6 +17,10 @@ public abstract class RecyclerViewAdapterBase<T, V extends View> extends Recycle
 	protected Context context;
 	protected List<T> items = new ArrayList<>();
 
+	public RecyclerViewAdapterBase(){
+
+	}
+
 	public RecyclerViewAdapterBase(Context context, List<T> items) {
 		this.context = context;
 		this.items = items;
