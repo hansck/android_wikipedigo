@@ -18,6 +18,10 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.IgnoreWhen;
@@ -52,6 +56,8 @@ public class PhotoListFragment extends BaseFragment {
 	TextView alertText;
 	@ViewById
 	ProgressBar onLoading;
+	@ViewById
+	AdView adView;
 
 	@AfterViews
 	void initViews() {
@@ -75,6 +81,10 @@ public class PhotoListFragment extends BaseFragment {
 			initPhotos();
 		}
 		swipeRefreshLayout.setOnRefreshListener(onUpdatePhotos);
+
+		MobileAds.initialize(getActivity(), getString(R.string.list_banner));
+		AdRequest adRequest = new AdRequest.Builder().build();
+		adView.loadAd(adRequest);
 	}
 
 	@IgnoreWhen(IgnoreWhen.State.VIEW_DESTROYED)
@@ -83,35 +93,6 @@ public class PhotoListFragment extends BaseFragment {
 		container.setVisibility(loading ? View.GONE : View.VISIBLE);
 	}
 	//endregion
-
-	void showFullImage(Photo photo) {
-		FragmentTransaction ft = getFragmentManager().beginTransaction();
-		PhotoDetailFragment fragment = new PhotoDetailFragment_();
-		Bundle bundle = new Bundle();
-		bundle.putParcelable("photo", photo);
-		fragment.setArguments(bundle);
-		ft.replace(R.id.fragmentContainer, fragment);
-		ft.addToBackStack(null);
-		ft.commit();
-	}
-
-	void searchPhoto(String query) {
-		if (query.trim().length() == 0) {
-			adapter.setItems(PhotosController.getInstance().getPhotos());
-		} else {
-			PhotosController.getInstance().searchPhotos(query, new BaseRunnable<RealmList<Photo>>() {
-				@Override
-				public void run(RealmList<Photo> object) {
-					if (object.size() == 0) {
-						alertText.setVisibility(View.VISIBLE);
-					} else {
-						alertText.setVisibility(View.GONE);
-					}
-					adapter.setItems(object);
-				}
-			});
-		}
-	}
 
 	//region override methods
 	@Override
@@ -153,6 +134,9 @@ public class PhotoListFragment extends BaseFragment {
 			searchView.setQuery(saved.getString("query"), false);
 			container.getLayoutManager().onRestoreInstanceState(saved.getParcelable("list"));
 		}
+		if (adView != null) {
+			adView.resume();
+		}
 		super.onResume();
 	}
 
@@ -161,7 +145,18 @@ public class PhotoListFragment extends BaseFragment {
 		Bundle saved = getArguments();
 		saved.putString("query", search);
 		saved.putParcelable("list", container.getLayoutManager().onSaveInstanceState());
+		if (adView != null) {
+			adView.pause();
+		}
 		super.onPause();
+	}
+
+	@Override
+	public void onDestroy() {
+		if (adView != null) {
+			adView.destroy();
+		}
+		super.onDestroy();
 	}
 	//endregion
 
@@ -182,13 +177,43 @@ public class PhotoListFragment extends BaseFragment {
 			}
 		});
 	}
+
+	private void showPhotoDetail(Photo photo) {
+		swipeRefreshLayout.setRefreshing(false);
+		FragmentTransaction ft = getFragmentManager().beginTransaction();
+		PhotoDetailFragment fragment = new PhotoDetailFragment_();
+		Bundle bundle = new Bundle();
+		bundle.putParcelable("photo", photo);
+		fragment.setArguments(bundle);
+		ft.replace(R.id.fragmentContainer, fragment);
+		ft.addToBackStack(null);
+		ft.commit();
+	}
+
+	private void searchPhoto(String query) {
+		if (query.trim().length() == 0) {
+			adapter.setItems(PhotosController.getInstance().getPhotos());
+		} else {
+			PhotosController.getInstance().searchPhotos(query, new BaseRunnable<RealmList<Photo>>() {
+				@Override
+				public void run(RealmList<Photo> object) {
+					if (object.size() == 0) {
+						alertText.setVisibility(View.VISIBLE);
+					} else {
+						alertText.setVisibility(View.GONE);
+					}
+					adapter.setItems(object);
+				}
+			});
+		}
+	}
 	//endregion
 
 	//region listeners
 	OnItemSelectedListener onItemSelected = new OnItemSelectedListener() {
 		@Override
 		public void onItemSelected(int position) {
-			showFullImage(adapter.getItem(position));
+			showPhotoDetail(adapter.getItem(position));
 		}
 	};
 
