@@ -1,4 +1,4 @@
-package go.wikipedi.base.api;
+package go.wikipedi.wikipedigo.api;
 
 import android.content.SharedPreferences;
 
@@ -20,10 +20,10 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import go.wikipedi.base.CacheInterceptor;
-import go.wikipedi.base.DateDeserializer;
-import go.wikipedi.base.LocalDateDeserializer;
-import go.wikipedi.base.LocalTimeDeserializer;
+import go.wikipedi.wikipedigo.model.deserializer.DateDeserializer;
+import go.wikipedi.wikipedigo.model.deserializer.LocalDateDeserializer;
+import go.wikipedi.wikipedigo.model.deserializer.LocalTimeDeserializer;
+import go.wikipedi.wikipedigo.util.CacheInterceptor;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -125,7 +125,7 @@ public class APIRequest {
 		return "bearer " + keyStore.getString("token", "");
 	}
 
-	public void saveCache(String key, String value){
+	public void saveCache(String key, String value) {
 		keyStore.edit().putString(key, value).apply();
 	}
 

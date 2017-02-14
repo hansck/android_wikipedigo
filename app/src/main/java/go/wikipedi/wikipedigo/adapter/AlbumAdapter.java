@@ -6,12 +6,11 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
-import go.wikipedi.base.OnListItemSelected;
-import go.wikipedi.base.RecyclerViewAdapterBase;
-import go.wikipedi.base.ViewWrapper;
 import go.wikipedi.wikipedigo.model.Photo;
+import go.wikipedi.wikipedigo.util.OnListItemSelected;
 import go.wikipedi.wikipedigo.view.ItemAlbumView;
 import go.wikipedi.wikipedigo.view.ItemAlbumView_;
+import go.wikipedi.wikipedigo.view.ViewWrapper;
 
 public class AlbumAdapter extends RecyclerViewAdapterBase<Photo, ItemAlbumView> {
 
@@ -40,5 +39,9 @@ public class AlbumAdapter extends RecyclerViewAdapterBase<Photo, ItemAlbumView> 
 				listener.onClick(holder.getAdapterPosition());
 			}
 		});
+	}
+
+	public void refresh() {
+		this.notifyDataSetChanged();
 	}
 }

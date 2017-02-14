@@ -23,11 +23,12 @@ public class ItemPhotoView extends RelativeLayout {
 
 	private Context context;
 
-	@ViewById(R.id.img_photo)
-	ImageView imgPhoto;
-
-	@ViewById(R.id.tv_name)
+	@ViewById
+	ImageView image;
+	@ViewById
 	TextView name;
+//	@ViewById
+//	ImageView favorite;
 
 	public ItemPhotoView(Context context) {
 		super(context);
@@ -41,7 +42,7 @@ public class ItemPhotoView extends RelativeLayout {
 				.load(photo.getImage())
 				.placeholder(R.drawable.ic_face)
 				.diskCacheStrategy(DiskCacheStrategy.ALL)
-				.into(imgPhoto);
+				.into(image);
 	}
 
 	@Override

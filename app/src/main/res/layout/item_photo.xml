@@ -8,14 +8,21 @@
                 android:layout_marginTop="@dimen/margin_tiny">
 
 	<ImageView
-		android:id="@+id/img_photo"
+		android:id="@+id/image"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:scaleType="centerCrop"
-		/>
+		android:scaleType="centerCrop"/>
+
+	<!--<ImageView-->
+		<!--android:id="@+id/favorite"-->
+		<!--android:layout_width="wrap_content"-->
+		<!--android:layout_height="wrap_content"-->
+		<!--android:layout_alignParentEnd="true"-->
+		<!--android:layout_alignParentRight="true"-->
+		<!--android:src="@drawable/favorite_border"/>-->
 
 	<TextView
-		android:id="@+id/tv_name"
+		android:id="@+id/name"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_alignParentBottom="true"
@@ -23,7 +30,7 @@
 		android:layout_marginLeft="@dimen/margin_tiny"
 		android:layout_marginRight="@dimen/margin_tiny"
 		android:ellipsize="marquee"
-		android:gravity="left"
+		android:gravity="start"
 		android:maxLines="2"
 		android:shadowColor="@color/black"
 		android:shadowDx="2"

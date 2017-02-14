@@ -1,4 +1,4 @@
-package go.wikipedi.base;
+package go.wikipedi.wikipedigo.model.deserializer;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;

@@ -33,14 +33,13 @@ import go.wikipedi.wikipedigo.adapter.PhotosAdapter;
 import go.wikipedi.wikipedigo.container.PhotosContainer;
 import go.wikipedi.wikipedigo.model.Photo;
 import go.wikipedi.wikipedigo.util.BaseRunnable;
-import go.wikipedi.wikipedigo.util.Common;
 import go.wikipedi.wikipedigo.util.OnItemSelectedListener;
 import go.wikipedi.wikipedigo.util.OnLastItemVisibleListener;
 import io.realm.RealmList;
 
 
 @EFragment(R.layout.fragment_photo_list)
-public class PhotoListFragment extends BaseFragment {
+public class FavoriteListFragment extends BaseFragment {
 
 	private String search;
 	private GridLayoutManager layoutManager;
@@ -62,11 +61,8 @@ public class PhotoListFragment extends BaseFragment {
 	// region Listeners
 	@AfterViews
 	void initViews() {
-		PhotosContainer.getInstance().getAllIgo();
-		adapter = new PhotosAdapter(getContext(), PhotosContainer.getInstance().getPhotos());
-		adapter.setOnItemSelectedListener(onItemSelected);
-		adapter.setOnLastItemVisibleListener(onLastItemVisible);
-		container.setAdapter(adapter);
+		PhotosContainer.getInstance().getFavoriteIgo();
+		setAdapter();
 		layoutManager = new GridLayoutManager(getContext(), 3, LinearLayoutManager.VERTICAL, false);
 		container.setLayoutManager(layoutManager);
 		container.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -78,9 +74,6 @@ public class PhotoListFragment extends BaseFragment {
 				}
 			}
 		});
-		if (PhotosContainer.getInstance().getPhotos().size() == 0) {
-			initPhotos();
-		}
 		swipeRefreshLayout.setOnRefreshListener(onUpdatePhotos);
 
 		MobileAds.initialize(getActivity(), getString(R.string.list_banner));
@@ -149,6 +142,7 @@ public class PhotoListFragment extends BaseFragment {
 
 	@Override
 	public void onResume() {
+		super.onResume();
 		if (searchItem != null) {
 			Bundle saved = getArguments();
 			searchView.setQuery(saved.getString("query"), false);
@@ -157,11 +151,12 @@ public class PhotoListFragment extends BaseFragment {
 		if (adView != null) {
 			adView.resume();
 		}
-		super.onResume();
+		setAdapter();
 	}
 
 	@Override
 	public void onPause() {
+		super.onPause();
 		Bundle saved = getArguments();
 		saved.putString("query", search);
 		saved.putParcelable("list", container.getLayoutManager().onSaveInstanceState());
@@ -173,7 +168,6 @@ public class PhotoListFragment extends BaseFragment {
 			swipeRefreshLayout.destroyDrawingCache();
 			swipeRefreshLayout.clearAnimation();
 		}
-		super.onPause();
 	}
 
 	@Override
@@ -186,21 +180,11 @@ public class PhotoListFragment extends BaseFragment {
 	//endregion
 
 	//region Private methods
-	private void initPhotos() {
-		setLoading(true);
-		PhotosContainer.getInstance().fetchPhotos(new Runnable() {
-			@Override
-			public void run() {
-				adapter.setItems(PhotosContainer.getInstance().getPhotos());
-				setLoading(false);
-			}
-		}, new Runnable() {
-			@Override
-			public void run() {
-				adapter.setItems(PhotosContainer.getInstance().getPhotos());
-				setLoading(false);
-			}
-		});
+	private void setAdapter() {
+		adapter = new PhotosAdapter(getContext(), PhotosContainer.getInstance().getFavorites());
+		adapter.setOnItemSelectedListener(onItemSelected);
+		adapter.setOnLastItemVisibleListener(onLastItemVisible);
+		container.setAdapter(adapter);
 	}
 
 	private void showPhotoDetail(Photo photo) {
@@ -213,9 +197,9 @@ public class PhotoListFragment extends BaseFragment {
 
 	private void searchPhoto(String query) {
 		if (query.trim().length() == 0) {
-			adapter.setItems(PhotosContainer.getInstance().getPhotos());
+			adapter.setItems(PhotosContainer.getInstance().getFavorites());
 		} else {
-			PhotosContainer.getInstance().searchAllIgo(query, new BaseRunnable<RealmList<Photo>>() {
+			PhotosContainer.getInstance().searchFavoriteIgo(query, new BaseRunnable<RealmList<Photo>>() {
 				@Override
 				public void run(RealmList<Photo> object) {
 					if (object.size() == 0) {
@@ -267,27 +251,9 @@ public class PhotoListFragment extends BaseFragment {
 	SwipeRefreshLayout.OnRefreshListener onUpdatePhotos = new SwipeRefreshLayout.OnRefreshListener() {
 		@Override
 		public void onRefresh() {
-			PhotosContainer.getInstance().updatePhotos(new Runnable() {
-				@Override
-				public void run() {
-					if (swipeRefreshLayout != null) {
-						if (swipeRefreshLayout.isRefreshing()) {
-							swipeRefreshLayout.setRefreshing(false);
-							adapter.refresh();
-						}
-					}
-				}
-			}, new Runnable() {
-				@Override
-				public void run() {
-					if (swipeRefreshLayout != null) {
-						if (swipeRefreshLayout.isRefreshing()) {
-							swipeRefreshLayout.setRefreshing(false);
-						}
-						Common.getInstance().showSnackbar(getActivity(), getString(R.string.no_internet));
-					}
-				}
-			});
+			PhotosContainer.getInstance().getFavoriteIgo();
+			adapter.refresh();
+			swipeRefreshLayout.setRefreshing(false);
 		}
 	};
 	//endregion

@@ -1,4 +1,4 @@
-package go.wikipedi.base;
+package go.wikipedi.wikipedigo.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import go.wikipedi.wikipedigo.view.ViewWrapper;
 
 /**
  * Created by E460 on 12/01/2017.

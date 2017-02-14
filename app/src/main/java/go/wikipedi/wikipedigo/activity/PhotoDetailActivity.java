@@ -1,13 +1,14 @@
-package go.wikipedi.wikipedigo.fragment;
+package go.wikipedi.wikipedigo.activity;
 
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.google.android.gms.ads.AdListener;
@@ -16,33 +17,26 @@ import com.google.android.gms.ads.InterstitialAd;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
-import go.wikipedi.base.OnListItemSelected;
 import go.wikipedi.wikipedigo.R;
 import go.wikipedi.wikipedigo.adapter.AlbumAdapter;
 import go.wikipedi.wikipedigo.adapter.PhotoSlideAdapter;
+import go.wikipedi.wikipedigo.container.PhotosContainer;
 import go.wikipedi.wikipedigo.model.Photo;
 import go.wikipedi.wikipedigo.model.PhotoClickContainer;
-import io.realm.Realm;
+import go.wikipedi.wikipedigo.util.OnListItemSelected;
 import io.realm.RealmList;
-import io.realm.RealmResults;
 
-import static android.R.attr.data;
-
-/**
- * Created by Hans CK on 06-Feb-17.
- */
-
-@EFragment(R.layout.fragment_photo_detail)
-public class PhotoDetailFragment extends BaseFragment {
+@EActivity(R.layout.activity_photo_detail)
+public class PhotoDetailActivity extends AppCompatActivity {
 
 	private AlbumAdapter adapter;
 	private int photoIdx = 0;
 	private Photo photo;
 	private RealmList<Photo> galleryPhotos = new RealmList<>();
-	private Realm realm = Realm.getDefaultInstance();
+	private Menu menu;
 
 	@ViewById
 	ViewPager currentPhoto;
@@ -53,36 +47,31 @@ public class PhotoDetailFragment extends BaseFragment {
 	@ViewById
 	CirclePageIndicator index;
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	@AfterViews
+	void initViews() {
 		if (PhotoClickContainer.getInstance().checkClicks()) {
 			showAds();
 		}
-		Bundle data = getArguments();
+		Bundle data = getIntent().getExtras();
 		if (data != null) {
 			photo = data.getParcelable("photo");
 		}
-		((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(photo.getName());
-		((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		setTitle(photo.getName());
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-		RealmResults<Photo> results = realm.where(Photo.class).equalTo("name", photo.getName()).findAll();
-		galleryPhotos.addAll(results.subList(0, results.size()));
-		adapter = new AlbumAdapter(getContext(), galleryPhotos, new OnListItemSelected() {
+		galleryPhotos = PhotosContainer.getInstance().getSameIgo(photo.getName());
+		adapter = new AlbumAdapter(this, galleryPhotos, new OnListItemSelected() {
 			@Override
 			public void onClick(int position) {
 				photoIdx = position;
 				showPhoto(photoIdx);
 			}
 		});
-		return null;
-	}
 
-	@AfterViews
-	void initViews() {
-		LinearLayoutManager lm = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+		LinearLayoutManager lm = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
 		imageList.setLayoutManager(lm);
 		imageList.setAdapter(adapter);
-		currentPhoto.setAdapter(new PhotoSlideAdapter(getContext(), galleryPhotos, R.layout.item_photo_slide));
+		currentPhoto.setAdapter(new PhotoSlideAdapter(this, galleryPhotos, R.layout.item_photo_gallery));
 		currentPhoto.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 			@Override
 			public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -106,13 +95,34 @@ public class PhotoDetailFragment extends BaseFragment {
 		}
 	}
 
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		this.menu = menu;
+		getMenuInflater().inflate(R.menu.favorite_bar, menu);
+		if (PhotosContainer.getInstance().checkIfFav(photo.getId())) {
+			menu.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.favorite_click));
+		}
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if (item.getItemId() == R.id.action_favorite) {
+			toggleFavorite();
+		} else {
+			onBackPressed();
+		}
+		return true;
+	}
+
+	//region Private methods
 	private void showPhoto(int idx) {
 		imageList.scrollToPosition(idx);
 		currentPhoto.setCurrentItem(idx, true);
 	}
 
 	private void showAds() {
-		final InterstitialAd mInterstitialAd = new InterstitialAd(getActivity());
+		final InterstitialAd mInterstitialAd = new InterstitialAd(this);
 		mInterstitialAd.setAdUnitId(getString(R.string.list_interstitial));
 		AdRequest adRequest = new AdRequest.Builder().build();
 		mInterstitialAd.loadAd(adRequest);
@@ -123,16 +133,20 @@ public class PhotoDetailFragment extends BaseFragment {
 					mInterstitialAd.show();
 				}
 			}
-
-			@Override
-			public void onAdClosed() {
-
-			}
-
-			@Override
-			public void onAdFailedToLoad(int errorCode) {
-
-			}
 		});
 	}
+
+	private void toggleFavorite() {
+		boolean isFavorite = !PhotosContainer.getInstance().checkIfFav(photo.getId());
+		for (Photo otherPhoto : galleryPhotos) {
+			PhotosContainer.getInstance().updateIgo(otherPhoto, isFavorite);
+			if (isFavorite) {
+				menu.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.favorite_click));
+			} else {
+				menu.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.favorite_border));
+			}
+		}
+		PhotosContainer.getInstance().getFavoriteIgo();
+	}
+	//endregion
 }

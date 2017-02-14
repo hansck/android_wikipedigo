@@ -1,12 +1,11 @@
-package go.wikipedi.base;
+package go.wikipedi.wikipedigo.util;
 
 import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-import java.io.IOException;
-
+import go.wikipedi.wikipedigo.application.BaseApplication;
 import okhttp3.ResponseBody;
 
 /**

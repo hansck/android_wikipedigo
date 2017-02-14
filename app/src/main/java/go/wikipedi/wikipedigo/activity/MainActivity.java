@@ -10,7 +10,7 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 
 import go.wikipedi.wikipedigo.R;
-import go.wikipedi.wikipedigo.fragment.PhotoListFragment_;
+import go.wikipedi.wikipedigo.fragment.TabFragment_;
 
 @EActivity(R.layout.activity_main)
 public class MainActivity extends BaseActivity {
@@ -20,7 +20,7 @@ public class MainActivity extends BaseActivity {
 	@AfterViews
 	void initViews() {
 		fm = getSupportFragmentManager();
-		Fragment fragment = new PhotoListFragment_();
+		Fragment fragment = new TabFragment_();
 		navigateTo(fragment);
 	}
 

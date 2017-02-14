@@ -1,4 +1,4 @@
-package go.wikipedi.base;
+package go.wikipedi.wikipedigo.util;
 
 import android.Manifest;
 

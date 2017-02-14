@@ -1,4 +1,4 @@
-package go.wikipedi.base;
+package go.wikipedi.wikipedigo.util;
 
 /**
  * Created by E460 on 17/01/2017.

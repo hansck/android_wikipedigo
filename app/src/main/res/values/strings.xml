@@ -4,6 +4,7 @@
 	<string name="btn_fetch_more">Show More</string>
 	<string name="text_igo_not_found">IGO not found</string>
 	<string name="text_search_igo">Search IGO</string>
+	<string name="favorite">Favorite</string>
 	<string name="no_internet">Ooops. No internet connection</string>
 	<string name="gallery">Gallery</string>
 	<string name="list_banner">ca-app-pub-3575151229739749/2711953710</string>

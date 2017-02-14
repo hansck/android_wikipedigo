@@ -1,4 +1,4 @@
-package go.wikipedi.base;
+package go.wikipedi.wikipedigo.view;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

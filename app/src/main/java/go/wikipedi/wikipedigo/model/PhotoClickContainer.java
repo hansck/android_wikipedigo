@@ -7,7 +7,7 @@ package go.wikipedi.wikipedigo.model;
 public class PhotoClickContainer {
 
 	private static PhotoClickContainer instance = new PhotoClickContainer();
-	private static final int MAX_CLICKS = 3;
+	private static final int MAX_CLICKS = 5;
 
 	private int clicks;
 

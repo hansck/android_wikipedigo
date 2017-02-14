@@ -12,7 +12,7 @@ import org.androidannotations.annotations.ViewById;
 
 import go.wikipedi.wikipedigo.R;
 
-@EViewGroup(R.layout.item_photo_list)
+@EViewGroup(R.layout.item_photo_slide)
 public class ItemAlbumView extends RelativeLayout {
 
 	private Context context;

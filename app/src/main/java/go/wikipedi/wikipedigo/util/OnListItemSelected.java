@@ -1,4 +1,4 @@
-package go.wikipedi.base;
+package go.wikipedi.wikipedigo.util;
 
 /**
  * Created by Hans CK on 09-Feb-17.
