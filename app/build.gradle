@@ -7,7 +7,7 @@ android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
     defaultConfig {
-        applicationId "go.wikipedi.wikipedigo"
+        applicationId "com.wikipedi.wikipedigo"
         minSdkVersion 14
         targetSdkVersion 25
         versionCode 2

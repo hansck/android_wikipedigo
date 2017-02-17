@@ -1,27 +1,35 @@
 {
   "project_info": {
-    "project_number": "1035555404970",
-    "firebase_url": "https://wikipedigo-eae07.firebaseio.com",
-    "project_id": "wikipedigo-eae07",
-    "storage_bucket": "wikipedigo-eae07.appspot.com"
+    "project_number": "1065373294720",
+    "firebase_url": "https://android-wikipedigo-da46e.firebaseio.com",
+    "project_id": "android-wikipedigo-da46e",
+    "storage_bucket": "android-wikipedigo-da46e.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1035555404970:android:9a7eb5f83d38a559",
+        "mobilesdk_app_id": "1:1065373294720:android:0b92c1c7035b67ab",
         "android_client_info": {
-          "package_name": "go.wikipedi.wikipedigo"
+          "package_name": "com.wikipedi.wikipedigo"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1035555404970-p872tknh0bpn3rtjum6fi396705g0fof.apps.googleusercontent.com",
+          "client_id": "1065373294720-qoupf808tff1md0vijv31lfg9qhaefts.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.wikipedi.wikipedigo",
+            "certificate_hash": "69ABDBF9AE65AB537FDC3FADD13E737A8C2522B9"
+          }
+        },
+        {
+          "client_id": "1065373294720-ofr6abtpjdk4ok1cnenj3tf5bn5914dg.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAkrOfvrlsPhWKnhIgVyaZbpHjaCWoXFYg"
+          "current_key": "AIzaSyCEOkoQGBSKCxt5guvjOVRzf3KfoUuU_qk"
         }
       ],
       "services": {
@@ -32,7 +40,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "1035555404970-p872tknh0bpn3rtjum6fi396705g0fof.apps.googleusercontent.com",
+              "client_id": "1065373294720-ofr6abtpjdk4ok1cnenj3tf5bn5914dg.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

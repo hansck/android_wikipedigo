@@ -7,7 +7,7 @@
 	android:layout_height="match_parent"
 	android:paddingLeft="@dimen/margin_tiny"
 	android:paddingRight="@dimen/margin_tiny"
-	tools:context="go.wikipedi.wikipedigo.activity.MainActivity_">
+	tools:context="com.wikipedi.wikipedigo.activity.MainActivity_">
 
 	<RelativeLayout
 		android:id="@+id/innerLayout"
