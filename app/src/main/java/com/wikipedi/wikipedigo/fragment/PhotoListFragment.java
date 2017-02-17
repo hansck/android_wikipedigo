@@ -1,5 +1,6 @@
 package com.wikipedi.wikipedigo.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
@@ -21,14 +22,9 @@ import android.widget.TextView;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
-
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.EFragment;
-import org.androidannotations.annotations.IgnoreWhen;
-import org.androidannotations.annotations.ViewById;
-
 import com.wikipedi.wikipedigo.R;
 import com.wikipedi.wikipedigo.activity.PhotoDetailActivity_;
+import com.wikipedi.wikipedigo.activity.SortActivity_;
 import com.wikipedi.wikipedigo.adapter.PhotosAdapter;
 import com.wikipedi.wikipedigo.container.PhotosContainer;
 import com.wikipedi.wikipedigo.model.Photo;
@@ -36,6 +32,12 @@ import com.wikipedi.wikipedigo.util.BaseRunnable;
 import com.wikipedi.wikipedigo.util.Common;
 import com.wikipedi.wikipedigo.util.OnItemSelectedListener;
 import com.wikipedi.wikipedigo.util.OnLastItemVisibleListener;
+
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.IgnoreWhen;
+import org.androidannotations.annotations.ViewById;
+
 import io.realm.RealmList;
 
 
@@ -112,7 +114,7 @@ public class PhotoListFragment extends BaseFragment {
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		inflater.inflate(R.menu.search_bar, menu);
+		inflater.inflate(R.menu.menu_home, menu);
 		super.onCreateOptionsMenu(menu, inflater);
 		searchItem = menu.findItem(R.id.action_find);
 		searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
@@ -136,6 +138,14 @@ public class PhotoListFragment extends BaseFragment {
 			searchItem.expandActionView();
 			searchView.setQuery(getArguments().getString("query"), false);
 		}
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if (item.getItemId() == R.id.action_sort) {
+			navigateToSort();
+		}
+		return true;
 	}
 
 	@Override
@@ -184,6 +194,15 @@ public class PhotoListFragment extends BaseFragment {
 		}
 		super.onDestroy();
 	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode == 1) {
+			if (resultCode == Activity.RESULT_OK) {
+				adapter.refresh();
+			}
+		}
+	}
 	//endregion
 
 	//region Private methods
@@ -229,6 +248,11 @@ public class PhotoListFragment extends BaseFragment {
 			});
 		}
 	}
+
+	private void navigateToSort() {
+		Intent intent = new Intent(getActivity(), SortActivity_.class);
+		startActivityForResult(intent, 1);
+	}
 	//endregion
 
 	//region listeners
@@ -271,19 +295,23 @@ public class PhotoListFragment extends BaseFragment {
 			PhotosContainer.getInstance().updatePhotos(new Runnable() {
 				@Override
 				public void run() {
-					if (swipeRefreshLayout.isRefreshing()) {
-						swipeRefreshLayout.setRefreshing(false);
-						PhotosContainer.getInstance().getAllIgo();
-						adapter.setItems(PhotosContainer.getInstance().getPhotos());
+					if (swipeRefreshLayout != null) {
+						if (swipeRefreshLayout.isRefreshing()) {
+							swipeRefreshLayout.setRefreshing(false);
+							PhotosContainer.getInstance().getAllIgo();
+							adapter.setItems(PhotosContainer.getInstance().getPhotos());
+						}
 					}
 				}
 			}, new Runnable() {
 				@Override
 				public void run() {
-					if (swipeRefreshLayout.isRefreshing()) {
-						swipeRefreshLayout.setRefreshing(false);
+					if (swipeRefreshLayout != null) {
+						if (swipeRefreshLayout.isRefreshing()) {
+							swipeRefreshLayout.setRefreshing(false);
+						}
+						Common.getInstance().showSnackbar(getActivity(), getString(R.string.no_internet));
 					}
-					Common.getInstance().showSnackbar(getActivity(), getString(R.string.no_internet));
 				}
 			});
 		}

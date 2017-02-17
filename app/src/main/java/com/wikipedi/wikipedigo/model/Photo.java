@@ -38,7 +38,7 @@ public class Photo extends RealmObject implements Parcelable {
 
 	@SerializedName("favorite_count")
 	@Expose
-	private int retweet;
+	private int favoriteCount;
 
 	private boolean isFavorite;
 
@@ -96,12 +96,12 @@ public class Photo extends RealmObject implements Parcelable {
 		this.id = id;
 	}
 
-	public int getRetweet() {
-		return retweet;
+	public int getFavoriteCount() {
+		return favoriteCount;
 	}
 
-	public void setRetweet(int retweet) {
-		this.retweet = retweet;
+	public void setFavoriteCount(int favoriteCount) {
+		this.favoriteCount = favoriteCount;
 	}
 
 	@Override
@@ -114,7 +114,7 @@ public class Photo extends RealmObject implements Parcelable {
 		dest.writeString(id);
 		dest.writeString(name);
 		dest.writeString(image);
-		dest.writeInt(retweet);
+		dest.writeInt(favoriteCount);
 		dest.writeLong(createdAt.getTime());
 		dest.writeByte((byte) (isFavorite ? 1 : 0));
 	}
@@ -123,7 +123,7 @@ public class Photo extends RealmObject implements Parcelable {
 		id = in.readString();
 		name = in.readString();
 		image = in.readString();
-		retweet = in.readInt();
+		favoriteCount = in.readInt();
 		createdAt = new Date(in.readLong());
 		isFavorite = in.readByte() != 0;
 	}

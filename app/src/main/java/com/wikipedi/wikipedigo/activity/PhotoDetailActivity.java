@@ -98,7 +98,7 @@ public class PhotoDetailActivity extends AppCompatActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		this.menu = menu;
-		getMenuInflater().inflate(R.menu.favorite_bar, menu);
+		getMenuInflater().inflate(R.menu.menu_favorite, menu);
 		if (PhotosContainer.getInstance().checkIfFav(photo.getId())) {
 			menu.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.favorite_click));
 		}

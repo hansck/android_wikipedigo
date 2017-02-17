@@ -7,6 +7,20 @@
 	<string name="favorite">Favorite</string>
 	<string name="no_internet">Ooops. No internet connection</string>
 	<string name="gallery">Gallery</string>
+	<string name="date">Date</string>
+	<string name="popularity">Popularity</string>
+	<string name="alphabetical">Alphabetical</string>
+	<string name="sort_igo">Sort IGO</string>
+	<string name="ascending">Ascending</string>
+	<string name="descending">Descending</string>
+	<string name="latest">Latest</string>
+	<string name="oldest">Oldest</string>
+	<string name="most_popular">Most popular</string>
+	<string name="less_popular">Less popular</string>
+	<string name="done">done</string>
+	<string name="sort_by">Sorting By</string>
+	<string name="sort_from">Sorting From</string>
+
 	<string name="list_banner">ca-app-pub-1498994788218568/6311883539</string>
 	<string name="list_interstitial">ca-app-pub-1498994788218568/7788616733</string>
 </resources>
