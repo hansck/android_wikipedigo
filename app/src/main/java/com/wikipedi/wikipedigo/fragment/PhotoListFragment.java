@@ -30,6 +30,7 @@ import com.wikipedi.wikipedigo.container.PhotosContainer;
 import com.wikipedi.wikipedigo.model.Photo;
 import com.wikipedi.wikipedigo.util.BaseRunnable;
 import com.wikipedi.wikipedigo.util.Common;
+import com.wikipedi.wikipedigo.util.Constants;
 import com.wikipedi.wikipedigo.util.OnItemSelectedListener;
 import com.wikipedi.wikipedigo.util.OnLastItemVisibleListener;
 
@@ -45,7 +46,6 @@ import io.realm.RealmList;
 public class PhotoListFragment extends BaseFragment {
 
 	private String search;
-	private GridLayoutManager layoutManager;
 	private PhotosAdapter adapter;
 	private SearchView searchView;
 	private MenuItem searchItem;
@@ -69,7 +69,7 @@ public class PhotoListFragment extends BaseFragment {
 		adapter.setOnItemSelectedListener(onItemSelected);
 		adapter.setOnLastItemVisibleListener(onLastItemVisible);
 		container.setAdapter(adapter);
-		layoutManager = new GridLayoutManager(getContext(), 3, LinearLayoutManager.VERTICAL, false);
+		GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 3, LinearLayoutManager.VERTICAL, false);
 		container.setLayoutManager(layoutManager);
 		container.addOnScrollListener(new RecyclerView.OnScrollListener() {
 			@Override
@@ -83,7 +83,7 @@ public class PhotoListFragment extends BaseFragment {
 		if (PhotosContainer.getInstance().getPhotos().size() == 0) {
 			initPhotos();
 		}
-		swipeRefreshLayout.setOnRefreshListener(onUpdatePhotos);
+		swipeRefreshLayout.setOnRefreshListener(onRefreshListener);
 
 		MobileAds.initialize(getActivity(), getString(R.string.list_banner));
 		AdRequest adRequest = new AdRequest.Builder().build();
@@ -134,9 +134,9 @@ public class PhotoListFragment extends BaseFragment {
 				return true;
 			}
 		});
-		if (getArguments().getString("query") != null && !getArguments().getString("query").equals("")) {
+		if (getArguments().getString(Constants.Photo.QUERY) != null && !getArguments().getString(Constants.Photo.QUERY).equals("")) {
 			searchItem.expandActionView();
-			searchView.setQuery(getArguments().getString("query"), false);
+			searchView.setQuery(getArguments().getString(Constants.Photo.QUERY), false);
 		}
 	}
 
@@ -162,8 +162,8 @@ public class PhotoListFragment extends BaseFragment {
 	public void onResume() {
 		if (searchItem != null) {
 			Bundle saved = getArguments();
-			searchView.setQuery(saved.getString("query"), false);
-			container.getLayoutManager().onRestoreInstanceState(saved.getParcelable("list"));
+			searchView.setQuery(saved.getString(Constants.Photo.QUERY), false);
+			container.getLayoutManager().onRestoreInstanceState(saved.getParcelable(Constants.Photo.LIST));
 		}
 		if (adView != null) {
 			adView.resume();
@@ -174,8 +174,8 @@ public class PhotoListFragment extends BaseFragment {
 	@Override
 	public void onPause() {
 		Bundle saved = getArguments();
-		saved.putString("query", search);
-		saved.putParcelable("list", container.getLayoutManager().onSaveInstanceState());
+		saved.putString(Constants.Photo.QUERY, search);
+		saved.putParcelable(Constants.Photo.LIST, container.getLayoutManager().onSaveInstanceState());
 		if (adView != null) {
 			adView.pause();
 		}
@@ -226,7 +226,7 @@ public class PhotoListFragment extends BaseFragment {
 	private void showPhotoDetail(Photo photo) {
 		Intent intent = new Intent(getActivity(), PhotoDetailActivity_.class);
 		Bundle bundle = new Bundle();
-		bundle.putParcelable("photo", photo);
+		bundle.putParcelable(Constants.Photo.PHOTO, photo);
 		intent.putExtras(bundle);
 		startActivity(intent);
 	}
@@ -289,7 +289,7 @@ public class PhotoListFragment extends BaseFragment {
 		}
 	};
 
-	SwipeRefreshLayout.OnRefreshListener onUpdatePhotos = new SwipeRefreshLayout.OnRefreshListener() {
+	SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
 		@Override
 		public void onRefresh() {
 			PhotosContainer.getInstance().updatePhotos(new Runnable() {

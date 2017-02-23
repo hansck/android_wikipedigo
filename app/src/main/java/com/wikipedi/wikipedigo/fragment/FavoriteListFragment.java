@@ -29,6 +29,7 @@ import com.wikipedi.wikipedigo.adapter.PhotosAdapter;
 import com.wikipedi.wikipedigo.container.PhotosContainer;
 import com.wikipedi.wikipedigo.model.Photo;
 import com.wikipedi.wikipedigo.util.BaseRunnable;
+import com.wikipedi.wikipedigo.util.Constants;
 import com.wikipedi.wikipedigo.util.OnItemSelectedListener;
 import com.wikipedi.wikipedigo.util.OnLastItemVisibleListener;
 
@@ -129,9 +130,9 @@ public class FavoriteListFragment extends BaseFragment {
 				return true;
 			}
 		});
-		if (getArguments().getString("query") != null && !getArguments().getString("query").equals("")) {
+		if (getArguments().getString(Constants.Photo.QUERY) != null && !getArguments().getString(Constants.Photo.QUERY).equals("")) {
 			searchItem.expandActionView();
-			searchView.setQuery(getArguments().getString("query"), false);
+			searchView.setQuery(getArguments().getString(Constants.Photo.QUERY), false);
 		}
 	}
 
@@ -158,8 +159,8 @@ public class FavoriteListFragment extends BaseFragment {
 		super.onResume();
 		if (searchItem != null) {
 			Bundle saved = getArguments();
-			searchView.setQuery(saved.getString("query"), false);
-			container.getLayoutManager().onRestoreInstanceState(saved.getParcelable("list"));
+			searchView.setQuery(saved.getString(Constants.Photo.QUERY), false);
+			container.getLayoutManager().onRestoreInstanceState(saved.getParcelable(Constants.Photo.LIST));
 		}
 		if (adView != null) {
 			adView.resume();
@@ -171,8 +172,8 @@ public class FavoriteListFragment extends BaseFragment {
 	public void onPause() {
 		super.onPause();
 		Bundle saved = getArguments();
-		saved.putString("query", search);
-		saved.putParcelable("list", container.getLayoutManager().onSaveInstanceState());
+		saved.putString(Constants.Photo.QUERY, search);
+		saved.putParcelable(Constants.Photo.LIST, container.getLayoutManager().onSaveInstanceState());
 		if (adView != null) {
 			adView.pause();
 		}
@@ -205,7 +206,7 @@ public class FavoriteListFragment extends BaseFragment {
 	private void showPhotoDetail(Photo photo) {
 		Intent intent = new Intent(getActivity(), PhotoDetailActivity_.class);
 		Bundle bundle = new Bundle();
-		bundle.putParcelable("photo", photo);
+		bundle.putParcelable(Constants.Photo.PHOTO, photo);
 		intent.putExtras(bundle);
 		startActivity(intent);
 	}

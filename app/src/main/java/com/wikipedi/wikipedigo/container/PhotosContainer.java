@@ -1,12 +1,11 @@
 package com.wikipedi.wikipedigo.container;
 
-import android.util.Log;
-
 import com.wikipedi.wikipedigo.api.APIRequest;
 import com.wikipedi.wikipedigo.model.Photo;
 import com.wikipedi.wikipedigo.model.UserPreferences;
 import com.wikipedi.wikipedigo.util.BaseRunnable;
 import com.wikipedi.wikipedigo.util.Comparators;
+import com.wikipedi.wikipedigo.util.Constants;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,6 +19,8 @@ import io.realm.Sort;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static io.realm.Case.INSENSITIVE;
 
 /**
  * Created by E460 on 17/01/2017.
@@ -85,7 +86,7 @@ public class PhotosContainer {
 			@Override
 			public void execute(Realm bgRealm) {
 				for (Photo photo : photos) {
-					if (realm.where(Photo.class).equalTo("id", photo.getId()).count() == 0) {
+					if (realm.where(Photo.class).equalTo(Constants.Photo.ID, photo.getId()).count() == 0) {
 						realm.copyToRealmOrUpdate(photos);
 					} else {
 						break;
@@ -97,21 +98,21 @@ public class PhotosContainer {
 
 	public void getAllIgo() {
 		photos.clear();
-		RealmResults<Photo> results = realm.where(Photo.class).findAllSorted("createdAt", Sort.DESCENDING);
+		RealmResults<Photo> results = realm.where(Photo.class).findAllSorted(Constants.Photo.CREATED_AT, Sort.DESCENDING);
 		photos.addAll(getDistinctPhotos(results));
 		sortIgo();
 	}
 
 	public RealmList<Photo> getSameIgo(String name) {
 		RealmList<Photo> galleryPhotos = new RealmList<>();
-		RealmResults<Photo> results = realm.where(Photo.class).equalTo("name", name).findAllSorted("createdAt", Sort.DESCENDING);
+		RealmResults<Photo> results = realm.where(Photo.class).equalTo(Constants.Photo.NAME, name).findAllSorted(Constants.Photo.CREATED_AT, Sort.DESCENDING);
 		galleryPhotos.addAll(results.subList(0, results.size()));
 		return galleryPhotos;
 	}
 
 	public void getFavoriteIgo() {
 		favorites.clear();
-		RealmResults<Photo> results = realm.where(Photo.class).equalTo("isFavorite", true).findAllSorted("createdAt", Sort.DESCENDING);
+		RealmResults<Photo> results = realm.where(Photo.class).equalTo(Constants.Photo.IS_FAVORITE, true).findAllSorted(Constants.Photo.CREATED_AT, Sort.DESCENDING);
 		favorites.addAll(getDistinctPhotos(results));
 	}
 
@@ -123,19 +124,19 @@ public class PhotosContainer {
 	}
 
 	public boolean checkIfFav(String query) {
-		RealmResults<Photo> results = realm.where(Photo.class).equalTo("id", query).findAll();
+		RealmResults<Photo> results = realm.where(Photo.class).equalTo(Constants.Photo.ID, query).findAll();
 		return results.get(0).isFavorite();
 	}
 
 	public void searchAllIgo(String query, BaseRunnable<RealmList<Photo>> onFound) {
-		RealmResults<Photo> results = realm.where(Photo.class).contains("name", query, Case.INSENSITIVE).findAllSorted("createdAt", Sort.DESCENDING);
+		RealmResults<Photo> results = realm.where(Photo.class).contains(Constants.Photo.NAME, query, INSENSITIVE).findAllSorted(Constants.Photo.CREATED_AT, Sort.DESCENDING);
 		RealmList<Photo> result = new RealmList<>();
 		result.addAll(getDistinctPhotos(results));
 		onFound.run(result);
 	}
 
 	public void searchFavoriteIgo(String query, BaseRunnable<RealmList<Photo>> onFound) {
-		RealmResults<Photo> results = realm.where(Photo.class).contains("name", query, Case.INSENSITIVE).equalTo("isFavorite", true).findAllSorted("createdAt", Sort.DESCENDING);
+		RealmResults<Photo> results = realm.where(Photo.class).contains(Constants.Photo.NAME, query, Case.INSENSITIVE).equalTo(Constants.Photo.IS_FAVORITE, true).findAllSorted(Constants.Photo.CREATED_AT, Sort.DESCENDING);
 		RealmList<Photo> result = new RealmList<>();
 		result.addAll(getDistinctPhotos(results));
 		onFound.run(result);
@@ -152,24 +153,21 @@ public class PhotosContainer {
 	public void sortIgo() {
 		switch (UserPreferences.getInstance().getSortBy()) {
 			case "date":
-				Log.e("date", UserPreferences.getInstance().getSortMethod());
-				if (UserPreferences.getInstance().getSortMethod().equals("ascending")) {
+				if (UserPreferences.getInstance().getSortMethod().equals(Constants.Sort.ASCENDING)) {
 					Collections.sort(photos, Comparators.dateLatest);
 				} else {
 					Collections.sort(photos, Comparators.dateOldest);
 				}
 				break;
 			case "popularity":
-				Log.e("pop", UserPreferences.getInstance().getSortMethod());
-				if (UserPreferences.getInstance().getSortMethod().equals("ascending")) {
+				if (UserPreferences.getInstance().getSortMethod().equals(Constants.Sort.ASCENDING)) {
 					Collections.sort(photos, Comparators.mostPopular);
 				} else {
 					Collections.sort(photos, Comparators.lessPopular);
 				}
 				break;
 			case "alphabetic":
-				Log.e("alp", UserPreferences.getInstance().getSortMethod());
-				if (UserPreferences.getInstance().getSortMethod().equals("ascending")) {
+				if (UserPreferences.getInstance().getSortMethod().equals(Constants.Sort.ASCENDING)) {
 					Collections.sort(photos, Comparators.alphabeticAscending);
 				} else {
 					Collections.sort(photos, Comparators.alphabeticDescending);

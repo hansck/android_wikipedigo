@@ -4,9 +4,8 @@ import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
+import com.wikipedi.wikipedigo.model.deserializer.DateDeserializer;
+import com.wikipedi.wikipedigo.util.CacheInterceptor;
 
 import java.security.cert.CertificateException;
 import java.util.Date;
@@ -20,10 +19,6 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import com.wikipedi.wikipedigo.model.deserializer.DateDeserializer;
-import com.wikipedi.wikipedigo.model.deserializer.LocalDateDeserializer;
-import com.wikipedi.wikipedigo.model.deserializer.LocalTimeDeserializer;
-import com.wikipedi.wikipedigo.util.CacheInterceptor;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -40,8 +35,6 @@ public class APIRequest {
 	static SharedPreferences keyStore;
 
 	private Gson gson = new GsonBuilder().
-			registerTypeAdapter(LocalTime.class, new LocalTimeDeserializer()).
-			registerTypeAdapter(LocalDate.class, new LocalDateDeserializer()).
 			registerTypeAdapter(Date.class, new DateDeserializer()).
 			excludeFieldsWithoutExposeAnnotation().
 			create();

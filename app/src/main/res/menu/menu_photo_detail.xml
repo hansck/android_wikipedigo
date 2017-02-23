@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+	<item
+		android:id="@+id/action_favorite"
+		android:icon="@drawable/favorite_border"
+		android:title="@string/favorite"
+		app:showAsAction="always"/>
+
+	<item
+		android:id="@+id/action_facebook"
+		android:icon="@drawable/ic_share"
+		android:title="@string/facebook"
+		app:showAsAction="never"/>
+
+	<item
+		android:id="@+id/action_twitter"
+		android:icon="@drawable/ic_share"
+		android:title="@string/twitter"
+		app:showAsAction="never"/>
+
+	<item
+		android:id="@+id/action_others"
+		android:icon="@drawable/ic_share"
+		android:title="@string/others"
+		app:showAsAction="never"/>
+</menu>

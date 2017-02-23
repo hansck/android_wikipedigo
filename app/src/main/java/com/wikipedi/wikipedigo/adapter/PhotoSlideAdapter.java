@@ -9,17 +9,17 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-
-import java.util.List;
-
 import com.wikipedi.wikipedigo.R;
 import com.wikipedi.wikipedigo.model.Photo;
+
+import java.util.List;
 
 public class PhotoSlideAdapter extends PagerAdapter {
 
 	private Context mContext;
 	private List<Photo> photos;
 	private int resPhoto;
+	private ImageView imageView;
 
 	public PhotoSlideAdapter(Context context, List<Photo> photos, int resId) {
 		mContext = context;
@@ -31,8 +31,8 @@ public class PhotoSlideAdapter extends PagerAdapter {
 	public Object instantiateItem(ViewGroup collection, int position) {
 		LayoutInflater inflater = LayoutInflater.from(mContext);
 		ViewGroup layout = (ViewGroup) inflater.inflate(resPhoto, collection, false);
-		final ImageView photo = (ImageView) layout.findViewById(R.id.photo);
-		showPhoto(photo, position);
+		imageView = (ImageView) layout.findViewById(R.id.photo);
+		showPhoto(imageView, position);
 		collection.addView(layout);
 		return layout;
 	}

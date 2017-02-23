@@ -1,5 +1,5 @@
 <resources>
-	<string name="app_name">Wikipedigo</string>
+	<string name="app_name">IGO Mania</string>
 
 	<string name="btn_fetch_more">Show More</string>
 	<string name="text_igo_not_found">IGO not found</string>
@@ -20,7 +20,18 @@
 	<string name="done">done</string>
 	<string name="sort_by">Sorting By</string>
 	<string name="sort_from">Sorting From</string>
+	<string name="oops">Ooops!</string>
+	<string name="no_internet_short">No internet connection</string>
+	<string name="retry">Retry</string>
+	<string name="share">Share</string>
+	<string name="facebook">Facebook</string>
+	<string name="others">Others</string>
+	<string name="twitter">Twitter</string>
+	<string name="shared_notice">Shared from IGO Mania</string>
 
+	<string name="facebook_app_id">1210309672410032</string>
+	<string name="twitter_consumer_key">dcKniATiTjQ0dRaeyW4CEgc4Y</string>
+	<string name="twitter_consumer_secret">gdOuwFVt2EvUhNiEwrXsnfgurKlyEmqKKEtgTldpAnI6d45uTX</string>
 	<string name="list_banner">ca-app-pub-1498994788218568/6311883539</string>
 	<string name="list_interstitial">ca-app-pub-1498994788218568/7788616733</string>
 </resources>

@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.wikipedi.wikipedigo.R;
 import com.wikipedi.wikipedigo.container.PhotosContainer;
 import com.wikipedi.wikipedigo.model.UserPreferences;
+import com.wikipedi.wikipedigo.util.Constants;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -38,54 +39,54 @@ public class SortActivity extends AppCompatActivity {
 	@AfterViews
 	void initViews() {
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		if (sortMethod.equals("ascending")) {
+		if (sortMethod.equals(Constants.Sort.ASCENDING)) {
 			ascending.setBackgroundColor(ContextCompat.getColor(this, R.color.choosed));
 		} else {
 			descending.setBackgroundColor(ContextCompat.getColor(this, R.color.choosed));
 		}
 
-		if (sortBy.equals("date")) {
+		if (sortBy.equals(Constants.Sort.DATE)) {
 			isDate();
-		} else if (sortBy.equals("popularity")) {
+		} else if (sortBy.equals(Constants.Sort.POPULARITY)) {
 			isPopularity();
-		} else if (sortBy.equals("alphabetic")) {
+		} else if (sortBy.equals(Constants.Sort.ALPHABETIC)) {
 			isAlphabetic();
 		}
 	}
 
 	@Click(R.id.dateContainer)
 	void onDate() {
-		if (!sortBy.equals("date")) {
+		if (!sortBy.equals(Constants.Sort.DATE)) {
 			isDate();
 		}
 	}
 
 	@Click(R.id.popularityContainer)
 	void onPopularity() {
-		if (!sortBy.equals("popularity")) {
+		if (!sortBy.equals(Constants.Sort.POPULARITY)) {
 			isPopularity();
 		}
 	}
 
 	@Click(R.id.alphabeticContainer)
 	void onAlphabetic() {
-		if (!sortBy.equals("alphabetic")) {
+		if (!sortBy.equals(Constants.Sort.ALPHABETIC)) {
 			isAlphabetic();
 		}
 	}
 
 	@Click(R.id.ascending)
 	void onAscending() {
-		if (!sortMethod.equals("ascending")) {
-			sortMethod = "ascending";
+		if (!sortMethod.equals(Constants.Sort.ASCENDING)) {
+			sortMethod = Constants.Sort.ASCENDING;
 			toggleSortMethod();
 		}
 	}
 
 	@Click(R.id.descending)
 	void onDescending() {
-		if (!sortMethod.equals("descending")) {
-			sortMethod = "descending";
+		if (!sortMethod.equals(Constants.Sort.DESCENDING)) {
+			sortMethod = Constants.Sort.DESCENDING;
 			toggleSortMethod();
 		}
 	}
@@ -122,21 +123,21 @@ public class SortActivity extends AppCompatActivity {
 	}
 
 	private void isDate() {
-		sortBy = "date";
+		sortBy = Constants.Sort.DATE;
 		ascending.setText(getString(R.string.latest));
 		descending.setText(getString(R.string.oldest));
 		toggleSortBy();
 	}
 
 	private void isPopularity() {
-		sortBy = "popularity";
+		sortBy = Constants.Sort.POPULARITY;
 		ascending.setText(getString(R.string.most_popular));
 		descending.setText(getString(R.string.less_popular));
 		toggleSortBy();
 	}
 
 	private void isAlphabetic() {
-		sortBy = "alphabetic";
+		sortBy = Constants.Sort.ALPHABETIC;
 		ascending.setText(getString(R.string.ascending));
 		descending.setText(getString(R.string.descending));
 		toggleSortBy();
@@ -165,10 +166,10 @@ public class SortActivity extends AppCompatActivity {
 	}
 
 	private void toggleSortMethod() {
-		if (sortMethod.equals("ascending")) {
+		if (sortMethod.equals(Constants.Sort.ASCENDING)) {
 			ascending.setBackgroundColor(ContextCompat.getColor(this, R.color.choosed));
 			descending.setBackgroundColor(ContextCompat.getColor(this, R.color.white));
-		} else if (sortMethod.equals("descending")) {
+		} else if (sortMethod.equals(Constants.Sort.DESCENDING)) {
 			ascending.setBackgroundColor(ContextCompat.getColor(this, R.color.white));
 			descending.setBackgroundColor(ContextCompat.getColor(this, R.color.choosed));
 		}
