@@ -5,6 +5,12 @@ package com.wikipedi.wikipedigo.util;
  */
 public class Constants {
 
+	public static class General {
+		public static String TAB_INDEX = "tabIndex";
+		public static int TAB_GALLERY = 0;
+		public static int TAB_FAVORITE = 1;
+	}
+
 	public static class Photo {
 		public static String ID = "id";
 		public static String PHOTO = "photo";

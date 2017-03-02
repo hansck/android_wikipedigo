@@ -89,7 +89,10 @@ public class PhotosContainer {
 					if (realm.where(Photo.class).equalTo(Constants.Photo.ID, photo.getId()).count() == 0) {
 						realm.copyToRealmOrUpdate(photos);
 					} else {
-						break;
+						Photo existPhoto = realm.where(Photo.class).equalTo(Constants.Photo.ID, photo.getId()).findFirst();
+						if (existPhoto.getFavoriteCount() != photo.getFavoriteCount()) {
+							existPhoto.setFavoriteCount(photo.getFavoriteCount());
+						}
 					}
 				}
 			}

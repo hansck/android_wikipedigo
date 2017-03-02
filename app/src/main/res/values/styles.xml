@@ -6,6 +6,7 @@
 		<item name="colorPrimary">@color/colorPrimary</item>
 		<item name="colorPrimaryDark">@color/colorPrimaryDark</item>
 		<item name="colorAccent">@color/colorAccent</item>
+		<item name="android:actionOverflowButtonStyle">@style/MenuItemTheme</item>
 	</style>
 
 	<style name="LinkAppearance" parent="ProfileBaseAppearance">
@@ -29,6 +30,12 @@
 		<item name="android:layout_width">match_parent</item>
 		<item name="android:layout_height">wrap_content</item>
 		<item name="android:maxLines">1</item>
+	</style>
+
+	<style name="MenuItemTheme">
+		<item name="android:src">@drawable/ic_share</item>
+		<item name="android:paddingRight">12dp</item>
+		<item name="android:paddingLeft">4dp</item>
 	</style>
 
 	<style name="ProgressBar">

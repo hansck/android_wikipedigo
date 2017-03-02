@@ -7,29 +7,28 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wikipedi.wikipedigo.R;
 import com.wikipedi.wikipedigo.model.Photo;
+import com.wikipedi.wikipedigo.util.Common;
 
 import java.util.List;
 
 public class PhotoSlideAdapter extends PagerAdapter {
 
-	private Context mContext;
+	private Context context;
 	private List<Photo> photos;
 	private int resPhoto;
 	private ImageView imageView;
 
 	public PhotoSlideAdapter(Context context, List<Photo> photos, int resId) {
-		mContext = context;
 		resPhoto = resId;
+		this.context = context;
 		this.photos = photos;
 	}
 
 	@Override
 	public Object instantiateItem(ViewGroup collection, int position) {
-		LayoutInflater inflater = LayoutInflater.from(mContext);
+		LayoutInflater inflater = LayoutInflater.from(context);
 		ViewGroup layout = (ViewGroup) inflater.inflate(resPhoto, collection, false);
 		imageView = (ImageView) layout.findViewById(R.id.photo);
 		showPhoto(imageView, position);
@@ -53,11 +52,6 @@ public class PhotoSlideAdapter extends PagerAdapter {
 	}
 
 	private void showPhoto(ImageView photo, int position) {
-		Glide.with(mContext)
-				.load(photos.get(position).getImage())
-				.animate(R.anim.grow_from_middle)
-				.placeholder(R.drawable.ic_face)
-				.diskCacheStrategy(DiskCacheStrategy.ALL)
-				.into(photo);
+		Common.getInstance().setImage(context, photo, photos.get(position).getImage());
 	}
 }

@@ -61,11 +61,33 @@ public class PhotoListFragment extends BaseFragment {
 	@ViewById
 	AdView adView;
 
+	public PhotoListFragment() {
+
+	}
+
+	public PhotoListFragment_ newInstance(int index) {
+		PhotoListFragment_ fragment = new PhotoListFragment_();
+		Bundle args = new Bundle();
+		args.putInt(Constants.General.TAB_INDEX, index);
+		fragment.setArguments(args);
+		return fragment;
+	}
+
+	public int getTabIndex() {
+		Bundle args = getArguments();
+		return args.getInt(Constants.General.TAB_INDEX);
+	}
+
 	// region Listeners
 	@AfterViews
 	void initViews() {
-		PhotosContainer.getInstance().getAllIgo();
-		adapter = new PhotosAdapter(getContext(), PhotosContainer.getInstance().getPhotos());
+		if (getTabIndex() == Constants.General.TAB_GALLERY) {
+			PhotosContainer.getInstance().getAllIgo();
+			adapter = new PhotosAdapter(getContext(), PhotosContainer.getInstance().getPhotos());
+		} else if (getTabIndex() == Constants.General.TAB_FAVORITE) {
+			PhotosContainer.getInstance().getFavoriteIgo();
+			adapter = new PhotosAdapter(getContext(), PhotosContainer.getInstance().getFavorites());
+		}
 		adapter.setOnItemSelectedListener(onItemSelected);
 		adapter.setOnLastItemVisibleListener(onLastItemVisible);
 		container.setAdapter(adapter);
@@ -160,6 +182,7 @@ public class PhotoListFragment extends BaseFragment {
 
 	@Override
 	public void onResume() {
+		super.onResume();
 		if (searchItem != null) {
 			Bundle saved = getArguments();
 			searchView.setQuery(saved.getString(Constants.Photo.QUERY), false);
@@ -168,11 +191,14 @@ public class PhotoListFragment extends BaseFragment {
 		if (adView != null) {
 			adView.resume();
 		}
-		super.onResume();
+		if (getTabIndex() == Constants.General.TAB_FAVORITE) {
+			adapter.setItems(PhotosContainer.getInstance().getFavorites());
+		}
 	}
 
 	@Override
 	public void onPause() {
+		super.onPause();
 		Bundle saved = getArguments();
 		saved.putString(Constants.Photo.QUERY, search);
 		saved.putParcelable(Constants.Photo.LIST, container.getLayoutManager().onSaveInstanceState());
@@ -184,7 +210,6 @@ public class PhotoListFragment extends BaseFragment {
 			swipeRefreshLayout.destroyDrawingCache();
 			swipeRefreshLayout.clearAnimation();
 		}
-		super.onPause();
 	}
 
 	@Override
@@ -223,35 +248,54 @@ public class PhotoListFragment extends BaseFragment {
 		});
 	}
 
+	private void searchPhoto(String query) {
+		if (getTabIndex() == Constants.General.TAB_GALLERY) {
+			if (query.trim().length() == 0) {
+				adapter.setItems(PhotosContainer.getInstance().getPhotos());
+			} else {
+				PhotosContainer.getInstance().searchAllIgo(query, new BaseRunnable<RealmList<Photo>>() {
+					@Override
+					public void run(RealmList<Photo> object) {
+						setSearchResult(object);
+					}
+				});
+			}
+		} else if (getTabIndex() == Constants.General.TAB_FAVORITE) {
+			if (query.trim().length() == 0) {
+				adapter.setItems(PhotosContainer.getInstance().getFavorites());
+			} else {
+				PhotosContainer.getInstance().searchFavoriteIgo(query, new BaseRunnable<RealmList<Photo>>() {
+					@Override
+					public void run(RealmList<Photo> object) {
+						setSearchResult(object);
+					}
+				});
+			}
+		}
+	}
+
+	private void setSearchResult(RealmList<Photo> object) {
+		if (object.size() == 0) {
+			setAlert(true);
+		} else {
+			setAlert(false);
+		}
+		adapter.setItems(object);
+	}
+
 	private void showPhotoDetail(Photo photo) {
 		Intent intent = new Intent(getActivity(), PhotoDetailActivity_.class);
 		Bundle bundle = new Bundle();
 		bundle.putParcelable(Constants.Photo.PHOTO, photo);
 		intent.putExtras(bundle);
 		startActivity(intent);
-	}
-
-	private void searchPhoto(String query) {
-		if (query.trim().length() == 0) {
-			adapter.setItems(PhotosContainer.getInstance().getPhotos());
-		} else {
-			PhotosContainer.getInstance().searchAllIgo(query, new BaseRunnable<RealmList<Photo>>() {
-				@Override
-				public void run(RealmList<Photo> object) {
-					if (object.size() == 0) {
-						setAlert(true);
-					} else {
-						setAlert(false);
-					}
-					adapter.setItems(object);
-				}
-			});
-		}
+		getActivity().overridePendingTransition(R.anim.enter_right, R.anim.exit_left);
 	}
 
 	private void navigateToSort() {
 		Intent intent = new Intent(getActivity(), SortActivity_.class);
 		startActivityForResult(intent, 1);
+		getActivity().overridePendingTransition(R.anim.enter_right, R.anim.exit_left);
 	}
 	//endregion
 
@@ -292,28 +336,34 @@ public class PhotoListFragment extends BaseFragment {
 	SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
 		@Override
 		public void onRefresh() {
-			PhotosContainer.getInstance().updatePhotos(new Runnable() {
-				@Override
-				public void run() {
-					if (swipeRefreshLayout != null) {
-						if (swipeRefreshLayout.isRefreshing()) {
-							swipeRefreshLayout.setRefreshing(false);
-							PhotosContainer.getInstance().getAllIgo();
-							adapter.setItems(PhotosContainer.getInstance().getPhotos());
+			if (getTabIndex() == Constants.General.TAB_GALLERY) {
+				PhotosContainer.getInstance().updatePhotos(new Runnable() {
+					@Override
+					public void run() {
+						if (swipeRefreshLayout != null) {
+							if (swipeRefreshLayout.isRefreshing()) {
+								swipeRefreshLayout.setRefreshing(false);
+								PhotosContainer.getInstance().getAllIgo();
+								adapter.setItems(PhotosContainer.getInstance().getPhotos());
+							}
 						}
 					}
-				}
-			}, new Runnable() {
-				@Override
-				public void run() {
-					if (swipeRefreshLayout != null) {
-						if (swipeRefreshLayout.isRefreshing()) {
-							swipeRefreshLayout.setRefreshing(false);
+				}, new Runnable() {
+					@Override
+					public void run() {
+						if (swipeRefreshLayout != null) {
+							if (swipeRefreshLayout.isRefreshing()) {
+								swipeRefreshLayout.setRefreshing(false);
+							}
+							Common.getInstance().showSnackbar(getActivity(), getString(R.string.no_internet));
 						}
-						Common.getInstance().showSnackbar(getActivity(), getString(R.string.no_internet));
 					}
-				}
-			});
+				});
+			} else if (getTabIndex() == Constants.General.TAB_FAVORITE) {
+				PhotosContainer.getInstance().getFavoriteIgo();
+				adapter.refresh();
+				swipeRefreshLayout.setRefreshing(false);
+			}
 		}
 	};
 	//endregion

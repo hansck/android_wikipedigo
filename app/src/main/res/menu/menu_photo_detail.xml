@@ -20,6 +20,18 @@
 		app:showAsAction="never"/>
 
 	<item
+		android:id="@+id/action_instagram"
+		android:icon="@drawable/ic_share"
+		android:title="@string/instagram"
+		app:showAsAction="never"/>
+
+	<item
+		android:id="@+id/action_path"
+		android:icon="@drawable/ic_share"
+		android:title="@string/path"
+		app:showAsAction="never"/>
+
+	<item
 		android:id="@+id/action_others"
 		android:icon="@drawable/ic_share"
 		android:title="@string/others"

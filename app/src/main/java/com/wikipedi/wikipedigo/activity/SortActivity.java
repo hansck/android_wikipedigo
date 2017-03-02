@@ -36,6 +36,7 @@ public class SortActivity extends AppCompatActivity {
 	private String sortMethod = UserPreferences.getInstance().getSortMethod();
 	private String sortBy = UserPreferences.getInstance().getSortBy();
 
+	//region Listeners
 	@AfterViews
 	void initViews() {
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -90,7 +91,9 @@ public class SortActivity extends AppCompatActivity {
 			toggleSortMethod();
 		}
 	}
+	//endregion
 
+	//region Override methods
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.menu_editable, menu);
@@ -101,7 +104,7 @@ public class SortActivity extends AppCompatActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case android.R.id.home:
-				super.onBackPressed();
+				onBackPressed();
 				break;
 			case R.id.action_save:
 				savePreferences();
@@ -110,16 +113,29 @@ public class SortActivity extends AppCompatActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		backToList(false);
+	}
+	//endregion
+
+	//region Private methods
 	private void savePreferences() {
 		UserPreferences.getInstance().setPreferences(sortBy, sortMethod);
 		PhotosContainer.getInstance().sortIgo();
-		backToList();
+		backToList(true);
 	}
 
-	private void backToList() {
+	private void backToList(boolean isChanged) {
 		Intent returnIntent = new Intent();
-		setResult(Activity.RESULT_OK, returnIntent);
+		if (isChanged) {
+			setResult(Activity.RESULT_OK, returnIntent);
+		} else {
+			setResult(Activity.RESULT_CANCELED, returnIntent);
+		}
 		finish();
+		overridePendingTransition(R.anim.enter_left, R.anim.exit_right);
 	}
 
 	private void isDate() {
@@ -174,4 +190,5 @@ public class SortActivity extends AppCompatActivity {
 			descending.setBackgroundColor(ContextCompat.getColor(this, R.color.choosed));
 		}
 	}
+	//endregion
 }

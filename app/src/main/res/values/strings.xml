@@ -1,6 +1,5 @@
 <resources>
 	<string name="app_name">IGO Mania</string>
-
 	<string name="btn_fetch_more">Show More</string>
 	<string name="text_igo_not_found">IGO not found</string>
 	<string name="text_search_igo">Search IGO</string>
@@ -27,7 +26,11 @@
 	<string name="facebook">Facebook</string>
 	<string name="others">Others</string>
 	<string name="twitter">Twitter</string>
+	<string name="instagram">Instagram</string>
+	<string name="path">Path</string>
 	<string name="shared_notice">Shared from IGO Mania</string>
+	<string name="shared_success">Successfully shared!</string>
+	<string name="shared_failed">Sorry. There is something wrong and we cannot share this picture</string>
 
 	<string name="facebook_app_id">1210309672410032</string>
 	<string name="twitter_consumer_key">dcKniATiTjQ0dRaeyW4CEgc4Y</string>

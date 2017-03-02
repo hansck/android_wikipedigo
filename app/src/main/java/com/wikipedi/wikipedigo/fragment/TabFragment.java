@@ -8,10 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.androidannotations.annotations.EFragment;
-
 import com.wikipedi.wikipedigo.R;
 import com.wikipedi.wikipedigo.adapter.TabAdapter;
+import com.wikipedi.wikipedigo.util.Constants;
+
+import org.androidannotations.annotations.EFragment;
 
 /**
  * Created by Hans CK on 13-Feb-17.
@@ -36,15 +37,13 @@ public class TabFragment extends Fragment {
 
 	private void setupViewPager(ViewPager vPager) {
 		adapter = new TabAdapter(getChildFragmentManager());
-		PhotoListFragment photoFragment = new PhotoListFragment_();
-		photoFragment.setArguments(new Bundle());
+		PhotoListFragment_ photoFragment = new PhotoListFragment_().newInstance(Constants.General.TAB_GALLERY);
 		adapter.addFragment(photoFragment, getString(R.string.gallery));
 
-		FavoriteListFragment favoriteFragment = new FavoriteListFragment_();
-		favoriteFragment.setArguments(new Bundle());
+		PhotoListFragment_ favoriteFragment = new PhotoListFragment_().newInstance(Constants.General.TAB_FAVORITE);
 		adapter.addFragment(favoriteFragment, getString(R.string.favorite));
-		vPager.setAdapter(adapter);
 
+		vPager.setAdapter(adapter);
 		TabLayout tabLayout = (TabLayout) getActivity().findViewById(R.id.tabLayout);
 		tabLayout.setupWithViewPager(vPager);
 	}
