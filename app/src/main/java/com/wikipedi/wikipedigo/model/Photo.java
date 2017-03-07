@@ -8,6 +8,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 
+import io.realm.RealmModel;
 import io.realm.RealmObject;
 import io.realm.annotations.Index;
 import io.realm.annotations.PrimaryKey;
@@ -16,7 +17,7 @@ import io.realm.annotations.PrimaryKey;
  * Created by E460 on 13/01/2017.
  */
 
-public class Photo extends RealmObject implements Parcelable {
+public class Photo extends RealmObject implements RealmModel, Parcelable {
 
 	@SerializedName("id")
 	@Expose
@@ -39,8 +40,6 @@ public class Photo extends RealmObject implements Parcelable {
 	@SerializedName("favorite_count")
 	@Expose
 	private int favoriteCount;
-
-	private boolean isFavorite;
 
 	public Photo() {
 
@@ -76,14 +75,6 @@ public class Photo extends RealmObject implements Parcelable {
 		this.createdAt = createdAt;
 	}
 
-	public boolean isFavorite() {
-		return isFavorite;
-	}
-
-	public void setFavorite(boolean favorite) {
-		isFavorite = favorite;
-	}
-
 	public Photo copy() {
 		return new Photo(name, image, createdAt);
 	}
@@ -116,7 +107,6 @@ public class Photo extends RealmObject implements Parcelable {
 		dest.writeString(image);
 		dest.writeInt(favoriteCount);
 		dest.writeLong(createdAt.getTime());
-		dest.writeByte((byte) (isFavorite ? 1 : 0));
 	}
 
 	protected Photo(Parcel in) {
@@ -125,7 +115,6 @@ public class Photo extends RealmObject implements Parcelable {
 		image = in.readString();
 		favoriteCount = in.readInt();
 		createdAt = new Date(in.readLong());
-		isFavorite = in.readByte() != 0;
 	}
 
 	public static final Creator<Photo> CREATOR = new Creator<Photo>() {

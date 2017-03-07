@@ -1,24 +1,24 @@
 package com.wikipedi.wikipedigo.model;
 
-import io.realm.RealmModel;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 /**
- * Created by Hans CK on 13-Feb-17.
+ * Created by Hans CK on 02-Mar-17.
  */
 
-public class Favorite extends RealmObject implements RealmModel {
+public class HiddenIgo extends RealmObject {
 
+	@SerializedName("name")
+	@Expose
 	@PrimaryKey
 	private String name;
 
-	public Favorite() {
+	public HiddenIgo() {
 
-	}
-
-	public Favorite(String name) {
-		this.name = name;
 	}
 
 	public String getName() {

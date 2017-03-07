@@ -125,7 +125,7 @@ public class PhotoDetailActivity extends AppCompatActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		this.menu = menu;
 		getMenuInflater().inflate(R.menu.menu_photo_detail, menu);
-		if (PhotosContainer.getInstance().checkIfFav(photo.getId())) {
+		if (PhotosContainer.getInstance().checkIfFav(photo.getName())) {
 			menu.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.favorite_click));
 		}
 		return true;
@@ -172,6 +172,19 @@ public class PhotoDetailActivity extends AppCompatActivity {
 	//endregion
 
 	//region Private methods
+	private void toggleFavorite() {
+		boolean isFavorite = !PhotosContainer.getInstance().checkIfFav(photo.getName());
+		for (Photo otherPhoto : galleryPhotos) {
+			PhotosContainer.getInstance().updateIgo(otherPhoto, isFavorite);
+			if (isFavorite) {
+				menu.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.favorite_click));
+			} else {
+				menu.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.favorite_border));
+			}
+		}
+		PhotosContainer.getInstance().getFavoriteIgo();
+	}
+
 	private void shareToFacebook() {
 		FacebookSdk.sdkInitialize(getApplicationContext());
 		ShareLinkContent linkContent = new ShareLinkContent.Builder()
@@ -233,19 +246,6 @@ public class PhotoDetailActivity extends AppCompatActivity {
 				}
 			}
 		});
-	}
-
-	private void toggleFavorite() {
-		boolean isFavorite = !PhotosContainer.getInstance().checkIfFav(photo.getId());
-		for (Photo otherPhoto : galleryPhotos) {
-			PhotosContainer.getInstance().updateIgo(otherPhoto, isFavorite);
-			if (isFavorite) {
-				menu.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.favorite_click));
-			} else {
-				menu.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.favorite_border));
-			}
-		}
-		PhotosContainer.getInstance().getFavoriteIgo();
 	}
 
 	public Uri getLocalBitmapUri(ImageView view) {

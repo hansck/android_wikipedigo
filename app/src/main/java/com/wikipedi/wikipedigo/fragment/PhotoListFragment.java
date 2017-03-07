@@ -81,7 +81,11 @@ public class PhotoListFragment extends BaseFragment {
 	// region Listeners
 	@AfterViews
 	void initViews() {
+		if (PhotosContainer.getInstance().getHiddenIgos().size() == 0) {
+			PhotosContainer.getInstance().fetchHiddenIgo();
+		}
 		if (getTabIndex() == Constants.General.TAB_GALLERY) {
+			PhotosContainer.getInstance().getAllHiddenIgo();
 			PhotosContainer.getInstance().getAllIgo();
 			adapter = new PhotosAdapter(getContext(), PhotosContainer.getInstance().getPhotos());
 		} else if (getTabIndex() == Constants.General.TAB_FAVORITE) {
@@ -336,6 +340,7 @@ public class PhotoListFragment extends BaseFragment {
 	SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
 		@Override
 		public void onRefresh() {
+			PhotosContainer.getInstance().fetchHiddenIgo();
 			if (getTabIndex() == Constants.General.TAB_GALLERY) {
 				PhotosContainer.getInstance().updatePhotos(new Runnable() {
 					@Override

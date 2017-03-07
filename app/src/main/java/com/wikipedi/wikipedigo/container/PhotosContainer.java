@@ -1,6 +1,8 @@
 package com.wikipedi.wikipedigo.container;
 
 import com.wikipedi.wikipedigo.api.APIRequest;
+import com.wikipedi.wikipedigo.model.Favorite;
+import com.wikipedi.wikipedigo.model.HiddenIgo;
 import com.wikipedi.wikipedigo.model.Photo;
 import com.wikipedi.wikipedigo.model.UserPreferences;
 import com.wikipedi.wikipedigo.util.BaseRunnable;
@@ -14,6 +16,7 @@ import java.util.List;
 import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmList;
+import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
 import retrofit2.Call;
@@ -30,6 +33,7 @@ public class PhotosContainer {
 
 	private RealmList<Photo> photos = new RealmList<>();
 	private RealmList<Photo> favorites = new RealmList<>();
+	private RealmList<HiddenIgo> hiddenIgos = new RealmList<>();
 	private Realm realm = Realm.getDefaultInstance();
 	private static PhotosContainer instance = new PhotosContainer();
 
@@ -67,9 +71,7 @@ public class PhotosContainer {
 			@Override
 			public void onResponse(Call<List<Photo>> call, Response<List<Photo>> response) {
 				photos = new RealmList<>(response.body().toArray(new Photo[response.body().size()]));
-				if (realm.where(Photo.class).count() != photos.size()) {
-					insertIgo();
-				}
+				insertIgo();
 				onSuccess.run();
 			}
 
@@ -81,22 +83,36 @@ public class PhotosContainer {
 		});
 	}
 
-	private void insertIgo() {
-		realm.executeTransaction(new Realm.Transaction() {
+	public void fetchHiddenIgo() {
+		APIRequest.getInstance().getService().getHiddenIgo().enqueue(new Callback<List<HiddenIgo>>() {
 			@Override
-			public void execute(Realm bgRealm) {
-				for (Photo photo : photos) {
-					if (realm.where(Photo.class).equalTo(Constants.Photo.ID, photo.getId()).count() == 0) {
-						realm.copyToRealmOrUpdate(photos);
-					} else {
-						Photo existPhoto = realm.where(Photo.class).equalTo(Constants.Photo.ID, photo.getId()).findFirst();
-						if (existPhoto.getFavoriteCount() != photo.getFavoriteCount()) {
-							existPhoto.setFavoriteCount(photo.getFavoriteCount());
-						}
-					}
+			public void onResponse(Call<List<HiddenIgo>> call, Response<List<HiddenIgo>> response) {
+				hiddenIgos = new RealmList<>(response.body().toArray(new HiddenIgo[response.body().size()]));
+				if (realm.where(Photo.class).count() != photos.size()) {
+					insertHiddenIgo();
+					getAllHiddenIgo();
+					getFavoriteIgo();
 				}
 			}
+
+			@Override
+			public void onFailure(Call<List<HiddenIgo>> call, Throwable t) {
+				t.printStackTrace();
+				getAllHiddenIgo();
+			}
 		});
+	}
+
+	private void insertIgo() {
+		realm.beginTransaction();
+		realm.copyToRealmOrUpdate(photos);
+		realm.commitTransaction();
+	}
+
+	private void insertHiddenIgo() {
+		realm.beginTransaction();
+		realm.copyToRealmOrUpdate(hiddenIgos);
+		realm.commitTransaction();
 	}
 
 	public void getAllIgo() {
@@ -106,42 +122,79 @@ public class PhotosContainer {
 		sortIgo();
 	}
 
+	public void getAllHiddenIgo() {
+		hiddenIgos.clear();
+		RealmResults<HiddenIgo> results = realm.where(HiddenIgo.class).findAll();
+		hiddenIgos.addAll(results);
+	}
+
 	public RealmList<Photo> getSameIgo(String name) {
 		RealmList<Photo> galleryPhotos = new RealmList<>();
-		RealmResults<Photo> results = realm.where(Photo.class).equalTo(Constants.Photo.NAME, name).findAllSorted(Constants.Photo.CREATED_AT, Sort.DESCENDING);
+		RealmResults<Photo> results = realm.where(Photo.class).equalTo(Constants.Photo.NAME, name)
+			.findAllSorted(Constants.Photo.CREATED_AT, Sort.DESCENDING);
 		galleryPhotos.addAll(results.subList(0, results.size()));
 		return galleryPhotos;
 	}
 
 	public void getFavoriteIgo() {
 		favorites.clear();
-		RealmResults<Photo> results = realm.where(Photo.class).equalTo(Constants.Photo.IS_FAVORITE, true).findAllSorted(Constants.Photo.CREATED_AT, Sort.DESCENDING);
-		favorites.addAll(getDistinctPhotos(results));
+		RealmResults<Favorite> results = realm.where(Favorite.class).findAll();
+		if (results.size() > 0) {
+			RealmQuery<Photo> query = realm.where(Photo.class);
+			int i = 0;
+			for (Favorite fav : results) {
+				if (i != 0) {
+					query = query.or();
+				}
+				query = query.equalTo(Constants.Photo.NAME, fav.getName());
+				i++;
+			}
+			RealmResults<Photo> favResults = query.findAllSorted(Constants.Photo.CREATED_AT, Sort.DESCENDING);
+			favorites.addAll(getDistinctPhotos(favResults));
+		}
 	}
 
 	public void updateIgo(Photo photo, boolean isFavorite) {
 		realm.beginTransaction();
-		photo.setFavorite(isFavorite);
-		realm.copyToRealmOrUpdate(photo);
+		if (isFavorite) {
+			Favorite favorite = new Favorite(photo.getName());
+			realm.copyToRealmOrUpdate(favorite);
+		} else {
+			RealmResults<Favorite> result = realm.where(Favorite.class).equalTo(Constants.Photo.NAME, photo.getName()).findAll();
+			result.deleteAllFromRealm();
+		}
 		realm.commitTransaction();
 	}
 
 	public boolean checkIfFav(String query) {
-		RealmResults<Photo> results = realm.where(Photo.class).equalTo(Constants.Photo.ID, query).findAll();
-		return results.get(0).isFavorite();
+		RealmResults<Favorite> results = realm.where(Favorite.class).equalTo(Constants.Photo.NAME, query).findAll();
+		return results.size() != 0;
 	}
 
-	public void searchAllIgo(String query, BaseRunnable<RealmList<Photo>> onFound) {
-		RealmResults<Photo> results = realm.where(Photo.class).contains(Constants.Photo.NAME, query, INSENSITIVE).findAllSorted(Constants.Photo.CREATED_AT, Sort.DESCENDING);
+	public void searchAllIgo(String search, BaseRunnable<RealmList<Photo>> onFound) {
+		RealmResults<Photo> results = realm.where(Photo.class).contains(Constants.Photo.NAME, search, INSENSITIVE)
+			.findAllSorted(Constants.Photo.CREATED_AT, Sort.DESCENDING);
 		RealmList<Photo> result = new RealmList<>();
 		result.addAll(getDistinctPhotos(results));
 		onFound.run(result);
 	}
 
-	public void searchFavoriteIgo(String query, BaseRunnable<RealmList<Photo>> onFound) {
-		RealmResults<Photo> results = realm.where(Photo.class).contains(Constants.Photo.NAME, query, Case.INSENSITIVE).equalTo(Constants.Photo.IS_FAVORITE, true).findAllSorted(Constants.Photo.CREATED_AT, Sort.DESCENDING);
+	public void searchFavoriteIgo(String search, BaseRunnable<RealmList<Photo>> onFound) {
+		RealmResults<Favorite> results = realm.where(Favorite.class).contains(Constants.Photo.NAME, search, Case.INSENSITIVE).findAll();
 		RealmList<Photo> result = new RealmList<>();
-		result.addAll(getDistinctPhotos(results));
+		if (results.size() > 0) {
+			RealmQuery<Photo> query = realm.where(Photo.class);
+			int i = 0;
+			for (Favorite fav : results) {
+				if (i != 0) {
+					query = query.or();
+				}
+				query = query.equalTo(Constants.Photo.NAME, fav.getName());
+				i++;
+			}
+			RealmResults<Photo> favResults = query.findAllSorted(Constants.Photo.CREATED_AT, Sort.DESCENDING);
+			result.addAll(getDistinctPhotos(favResults));
+		}
 		onFound.run(result);
 	}
 
@@ -151,6 +204,10 @@ public class PhotosContainer {
 
 	public RealmList<Photo> getFavorites() {
 		return favorites;
+	}
+
+	public RealmList<HiddenIgo> getHiddenIgos() {
+		return hiddenIgos;
 	}
 
 	public void sortIgo() {
@@ -187,6 +244,11 @@ public class PhotosContainer {
 				if (p.getName().equals(distinct.getName())) {
 					exist = true;
 					break;
+				}
+			}
+			for (HiddenIgo hidden : hiddenIgos) {
+				if (p.getName().equals(hidden.getName())) {
+					exist = true;
 				}
 			}
 			if (!exist) {
