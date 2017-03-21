@@ -12,11 +12,10 @@ public class Constants {
 	}
 
 	public static class Photo {
-		public static String ID = "id";
 		public static String PHOTO = "photo";
 		public static String CREATED_AT = "createdAt";
 		public static String NAME = "name";
-		public static String IS_FAVORITE = "isFavorite";
+		public static String FAV_COUNT = "favoriteCount";
 		public static String PREFS = "prefs";
 		public static String QUERY = "query";
 		public static String LIST = "list";

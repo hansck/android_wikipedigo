@@ -27,14 +27,14 @@ public class Comparators {
 	public static Comparator<Photo> mostPopular = new Comparator<Photo>() {
 		@Override
 		public int compare(Photo lhs, Photo rhs) {
-			return rhs.getFavoriteCount() - lhs.getFavoriteCount();
+			return rhs.getPopularity() - lhs.getPopularity();
 		}
 	};
 
 	public static Comparator<Photo> lessPopular = new Comparator<Photo>() {
 		@Override
 		public int compare(Photo lhs, Photo rhs) {
-			return lhs.getFavoriteCount() - rhs.getFavoriteCount();
+			return lhs.getPopularity() - rhs.getPopularity();
 		}
 	};
 

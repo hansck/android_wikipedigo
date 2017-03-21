@@ -29,9 +29,6 @@
 -dontwarn org.codehaus.mojo.**
 -dontwarn retrofit2.**
 
-# Preserve this classes
--keep class * extends android.app.Activity
-
 # Do not minify this library
 -keep class com.flurry.** { *; }
 -keep class android.support.v4.** { *; }

@@ -40,8 +40,4 @@ public class AlbumAdapter extends RecyclerViewAdapterBase<Photo, ItemAlbumView> 
 			}
 		});
 	}
-
-	public void refresh() {
-		this.notifyDataSetChanged();
-	}
 }

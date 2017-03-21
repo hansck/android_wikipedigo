@@ -88,6 +88,7 @@ public class PhotoDetailActivity extends AppCompatActivity {
 				photoIdx = position;
 				showPhoto(photoIdx);
 				Common.getInstance().setImage(PhotoDetailActivity.this, dummyImage, galleryPhotos.get(position).getImage());
+				slideAdapter.onPageScrolled(currentPhoto.findViewWithTag(currentPhoto.getCurrentItem()));
 			}
 		});
 
@@ -99,7 +100,7 @@ public class PhotoDetailActivity extends AppCompatActivity {
 		currentPhoto.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 			@Override
 			public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+				slideAdapter.onPageScrolled(currentPhoto.findViewWithTag(currentPhoto.getCurrentItem()));
 			}
 
 			@Override
@@ -133,32 +134,36 @@ public class PhotoDetailActivity extends AppCompatActivity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		Uri uri = getLocalBitmapUri(dummyImage);
-		if (uri != null) {
-			switch (item.getItemId()) {
-				case R.id.action_favorite:
-					toggleFavorite();
-					break;
-				case R.id.action_facebook:
-					shareToFacebook();
-					break;
-				case R.id.action_twitter:
-					shareToTwitter(uri);
-					break;
-				case R.id.action_instagram:
-					shareToInstagram(uri);
-					break;
-				case R.id.action_path:
-					shareToPath(uri);
-					break;
-				case R.id.action_others:
-					shareToOtherApps(uri);
-					break;
-				default:
-					onBackPressed();
-			}
+		if (item.getItemId() == android.R.id.home) {
+			onBackPressed();
 		} else {
-			Common.getInstance().showSnackbar(this, getString(R.string.shared_failed));
+			Uri uri = getLocalBitmapUri(dummyImage);
+			if (uri != null) {
+				switch (item.getItemId()) {
+					case R.id.action_favorite:
+						toggleFavorite();
+						break;
+					case R.id.action_facebook:
+						shareToFacebook();
+						break;
+					case R.id.action_twitter:
+						shareToTwitter(uri);
+						break;
+					case R.id.action_instagram:
+						shareToInstagram(uri);
+						break;
+					case R.id.action_path:
+						shareToPath(uri);
+						break;
+					case R.id.action_others:
+						shareToOtherApps(uri);
+						break;
+					default:
+						onBackPressed();
+				}
+			} else {
+				Common.getInstance().showSnackbar(this, getString(R.string.shared_failed));
+			}
 		}
 		return true;
 	}
@@ -233,21 +238,6 @@ public class PhotoDetailActivity extends AppCompatActivity {
 		currentPhoto.setCurrentItem(idx, true);
 	}
 
-	private void showAds() {
-		final InterstitialAd mInterstitialAd = new InterstitialAd(this);
-		mInterstitialAd.setAdUnitId(getString(R.string.list_interstitial));
-		AdRequest adRequest = new AdRequest.Builder().build();
-		mInterstitialAd.loadAd(adRequest);
-		mInterstitialAd.setAdListener(new AdListener() {
-			@Override
-			public void onAdLoaded() {
-				if (mInterstitialAd.isLoaded()) {
-					mInterstitialAd.show();
-				}
-			}
-		});
-	}
-
 	public Uri getLocalBitmapUri(ImageView view) {
 		try {
 			Bitmap bmp = ((GlideBitmapDrawable) view.getDrawable()).getBitmap();
@@ -262,6 +252,7 @@ public class PhotoDetailActivity extends AppCompatActivity {
 				} else {
 					File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "igo_mania_" + System.currentTimeMillis() + ".jpeg");
 					bmpUri = FileProvider.getUriForFile(PhotoDetailActivity.this, "com.codepath.fileprovider", file);
+					file.delete();
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -271,6 +262,21 @@ public class PhotoDetailActivity extends AppCompatActivity {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	private void showAds() {
+		final InterstitialAd mInterstitialAd = new InterstitialAd(this);
+		mInterstitialAd.setAdUnitId(getString(R.string.list_interstitial));
+		AdRequest adRequest = new AdRequest.Builder().build();
+		mInterstitialAd.loadAd(adRequest);
+		mInterstitialAd.setAdListener(new AdListener() {
+			@Override
+			public void onAdLoaded() {
+				if (mInterstitialAd.isLoaded()) {
+					mInterstitialAd.show();
+				}
+			}
+		});
 	}
 	//endregion
 }

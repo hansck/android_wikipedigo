@@ -29,6 +29,10 @@ public class Photo extends RealmObject implements RealmModel, Parcelable {
 	@Index
 	private String name;
 
+	@SerializedName("video_link")
+	@Expose
+	private String videoLink;
+
 	@SerializedName("image")
 	@Expose
 	private String image;
@@ -41,14 +45,18 @@ public class Photo extends RealmObject implements RealmModel, Parcelable {
 	@Expose
 	private int favoriteCount;
 
+	private int popularity;
+
 	public Photo() {
 
 	}
 
-	public Photo(String name, String imageLink, Date createdAt) {
+	public Photo(String name, String videoLink, String image, Date createdAt, int popularity) {
 		this.name = name;
-		this.image = imageLink;
+		this.videoLink = videoLink;
+		this.image = image;
 		this.createdAt = createdAt;
+		this.popularity = popularity;
 	}
 
 	public String getName() {
@@ -57,6 +65,14 @@ public class Photo extends RealmObject implements RealmModel, Parcelable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getVideoLink() {
+		return videoLink;
+	}
+
+	public void setVideoLink(String videoLink) {
+		this.videoLink = videoLink;
 	}
 
 	public String getImage() {
@@ -75,10 +91,6 @@ public class Photo extends RealmObject implements RealmModel, Parcelable {
 		this.createdAt = createdAt;
 	}
 
-	public Photo copy() {
-		return new Photo(name, image, createdAt);
-	}
-
 	public String getId() {
 		return id;
 	}
@@ -95,6 +107,14 @@ public class Photo extends RealmObject implements RealmModel, Parcelable {
 		this.favoriteCount = favoriteCount;
 	}
 
+	public int getPopularity() {
+		return popularity;
+	}
+
+	public void setPopularity(int popularity) {
+		this.popularity = popularity;
+	}
+
 	@Override
 	public int describeContents() {
 		return 0;
@@ -104,17 +124,21 @@ public class Photo extends RealmObject implements RealmModel, Parcelable {
 	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeString(id);
 		dest.writeString(name);
+		dest.writeString(videoLink);
 		dest.writeString(image);
 		dest.writeInt(favoriteCount);
 		dest.writeLong(createdAt.getTime());
+		dest.writeInt(popularity);
 	}
 
 	protected Photo(Parcel in) {
 		id = in.readString();
 		name = in.readString();
+		videoLink = in.readString();
 		image = in.readString();
 		favoriteCount = in.readInt();
 		createdAt = new Date(in.readLong());
+		popularity = in.readInt();
 	}
 
 	public static final Creator<Photo> CREATOR = new Creator<Photo>() {

@@ -4,6 +4,7 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 	tools:ignore="ContentDescription">
 
 	<ImageView
@@ -11,4 +12,13 @@
 		android:layout_width="match_parent"
 		android:layout_height="@dimen/item_photo_slide"
 		android:scaleType="fitCenter"/>
+
+	<uk.co.jakelee.vidsta.VidstaPlayer
+		android:id="@+id/video"
+		android:visibility="gone"
+		app:autoPlay="false"
+		app:fullScreenButtonVisible="false"
+		app:fullScreenButtonEnabled="false"
+		android:layout_width="wrap_content"
+		android:layout_height="@dimen/item_photo_slide" />
 </RelativeLayout>

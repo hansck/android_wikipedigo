@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="alphabetical">Alfabetis</string>
+	<string name="ascending">A-Z</string>
+	<string name="descending">Z-A</string>
+	<string name="date">Tanggal</string>
+	<string name="done">Selesai</string>
+	<string name="favorite">Favorit</string>
+	<string name="gallery">Galeri</string>
+	<string name="latest">Terbaru</string>
+	<string name="less_popular">Popularitas biasa</string>
+	<string name="most_popular">Terpopuler</string>
+	<string name="no_internet">Oops. Tidak ada koneksi internet!</string>
+	<string name="no_internet_short">Tidak ada koneksi internet</string>
+	<string name="oldest">Terlama</string>
+	<string name="oops">Ooops!</string>
+	<string name="others">Lain-Lain</string>
+	<string name="popularity">Popularitas</string>
+	<string name="retry">Coba Lagi</string>
+	<string name="share">Bagikan</string>
+	<string name="shared_failed">Maaf. Terjadi kesalahan dalam membagikan foto ini</string>
+	<string name="shared_notice">Dibagikan dari IGO Mania</string>
+	<string name="shared_success">Berhasil dibagikan</string>
+	<string name="sort_by">Urutkan Berdasarkan</string>
+	<string name="sort_from">Urutkan Dari</string>
+	<string name="sort_igo">Urutkan IGO</string>
+	<string name="text_igo_not_found">IGO tidak dapat ditemukan</string>
+	<string name="text_search_igo">Cari IGO</string>
+</resources>

@@ -1,5 +1,7 @@
 package com.wikipedi.wikipedigo.container;
 
+import android.util.Log;
+
 import com.wikipedi.wikipedigo.api.APIRequest;
 import com.wikipedi.wikipedigo.model.Favorite;
 import com.wikipedi.wikipedigo.model.HiddenIgo;
@@ -119,7 +121,7 @@ public class PhotosContainer {
 		photos.clear();
 		RealmResults<Photo> results = realm.where(Photo.class).findAllSorted(Constants.Photo.CREATED_AT, Sort.DESCENDING);
 		photos.addAll(getDistinctPhotos(results));
-		sortIgo();
+//		sortIgo();
 	}
 
 	public void getAllHiddenIgo() {
@@ -198,6 +200,21 @@ public class PhotosContainer {
 		onFound.run(result);
 	}
 
+	private int getTopPopularity(String name) {
+		RealmResults<Photo> results = realm.where(Photo.class).equalTo(Constants.Photo.NAME, name)
+			.findAllSorted(Constants.Photo.CREATED_AT, Sort.DESCENDING);
+		return results.max(Constants.Photo.FAV_COUNT).intValue();
+	}
+
+	private void setPopularity(Photo p) {
+		int popularity = getTopPopularity(p.getName());
+		if (popularity > 0) {
+			realm.beginTransaction();
+			p.setPopularity(getTopPopularity(p.getName()));
+			realm.commitTransaction();
+		}
+	}
+
 	public RealmList<Photo> getPhotos() {
 		return photos;
 	}
@@ -238,7 +255,7 @@ public class PhotosContainer {
 
 	private ArrayList<Photo> getDistinctPhotos(RealmResults<Photo> results) {
 		ArrayList<Photo> distinctPhotos = new ArrayList<>();
-		for (Photo p : realm.copyFromRealm(results)) {
+		for (Photo p : results) {
 			boolean exist = false;
 			for (Photo distinct : distinctPhotos) {
 				if (p.getName().equals(distinct.getName())) {
@@ -252,7 +269,11 @@ public class PhotosContainer {
 				}
 			}
 			if (!exist) {
+				setPopularity(p);
 				distinctPhotos.add(p);
+				if(distinctPhotos.size() == 350){
+					break;
+				}
 			}
 		}
 		return distinctPhotos;

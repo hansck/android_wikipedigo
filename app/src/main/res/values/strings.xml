@@ -1,40 +1,39 @@
 <resources>
-	<string name="app_name">IGO Mania</string>
-	<string name="btn_fetch_more">Show More</string>
-	<string name="text_igo_not_found">IGO not found</string>
-	<string name="text_search_igo">Search IGO</string>
-	<string name="favorite">Favorite</string>
-	<string name="no_internet">Ooops. No internet connection</string>
-	<string name="gallery">Gallery</string>
-	<string name="date">Date</string>
-	<string name="popularity">Popularity</string>
 	<string name="alphabetical">Alphabetical</string>
-	<string name="sort_igo">Sort IGO</string>
+	<string name="app_name" translatable="false">IGO Mania</string>
 	<string name="ascending">Ascending</string>
+	<string name="date">Date</string>
 	<string name="descending">Descending</string>
-	<string name="latest">Latest</string>
-	<string name="oldest">Oldest</string>
-	<string name="most_popular">Most popular</string>
-	<string name="less_popular">Less popular</string>
 	<string name="done">done</string>
-	<string name="sort_by">Sorting By</string>
-	<string name="sort_from">Sorting From</string>
-	<string name="oops">Ooops!</string>
+	<string name="favorite">Favorite</string>
+	<string name="gallery">Gallery</string>
+	<string name="latest">Latest</string>
+	<string name="less_popular">Less popular</string>
+	<string name="most_popular">Most popular</string>
+	<string name="no_internet">Ooops. No internet connection</string>
 	<string name="no_internet_short">No internet connection</string>
+	<string name="oldest">Oldest</string>
+	<string name="oops">Ooops!</string>
+	<string name="others">Others</string>
+	<string name="popularity">Popularity</string>
 	<string name="retry">Retry</string>
 	<string name="share">Share</string>
-	<string name="facebook">Facebook</string>
-	<string name="others">Others</string>
-	<string name="twitter">Twitter</string>
-	<string name="instagram">Instagram</string>
-	<string name="path">Path</string>
 	<string name="shared_notice">Shared from IGO Mania</string>
 	<string name="shared_success">Successfully shared!</string>
 	<string name="shared_failed">Sorry. There is something wrong and we cannot share this picture</string>
+	<string name="sort_by">Sorting By</string>
+	<string name="sort_from">Sorting From</string>
+	<string name="sort_igo">Sort IGO</string>
+	<string name="text_igo_not_found">IGO not found</string>
+	<string name="text_search_igo">Search IGO</string>
 
-	<string name="facebook_app_id">1210309672410032</string>
-	<string name="twitter_consumer_key">dcKniATiTjQ0dRaeyW4CEgc4Y</string>
-	<string name="twitter_consumer_secret">gdOuwFVt2EvUhNiEwrXsnfgurKlyEmqKKEtgTldpAnI6d45uTX</string>
-	<string name="list_banner">ca-app-pub-1498994788218568/6311883539</string>
-	<string name="list_interstitial">ca-app-pub-1498994788218568/7788616733</string>
+	<string name="facebook" translatable="false">Facebook</string>
+	<string name="facebook_app_id" translatable="false">1210309672410032</string>
+	<string name="instagram" translatable="false">Instagram</string>
+	<string name="list_banner" translatable="false">ca-app-pub-1498994788218568/6311883539</string>
+	<string name="list_interstitial" translatable="false">ca-app-pub-1498994788218568/7788616733</string>
+	<string name="twitter" translatable="false">Twitter</string>
+	<string name="twitter_consumer_key" translatable="false">dcKniATiTjQ0dRaeyW4CEgc4Y</string>
+	<string name="twitter_consumer_secret" translatable="false">gdOuwFVt2EvUhNiEwrXsnfgurKlyEmqKKEtgTldpAnI6d45uTX</string>
+	<string name="path" translatable="false">Path</string>
 </resources>

@@ -4,11 +4,9 @@ import android.app.Application;
 import android.content.Context;
 
 import com.crashlytics.android.Crashlytics;
-import com.facebook.stetho.Stetho;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
-import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 import com.wikipedi.wikipedigo.R;
 import com.wikipedi.wikipedigo.util.ConnectivityReceiver;
 
@@ -34,10 +32,10 @@ public class BaseApplication extends Application {
 		Realm.init(this);
 
 		// Set Stetho Monitoring
-		Stetho.initialize(Stetho.newInitializerBuilder(this)
-				.enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
-				.enableWebKitInspector(RealmInspectorModulesProvider.builder(this).build())
-				.build());
+//		Stetho.initialize(Stetho.newInitializerBuilder(this)
+//				.enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
+//				.enableWebKitInspector(RealmInspectorModulesProvider.builder(this).build())
+//				.build());
 
 		//Set Twitter Fabric
 		TwitterAuthConfig authConfig = new TwitterAuthConfig(getString(R.string.twitter_consumer_key),
