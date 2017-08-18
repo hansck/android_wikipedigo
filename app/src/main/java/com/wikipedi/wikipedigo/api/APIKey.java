@@ -7,5 +7,6 @@ package com.wikipedi.wikipedigo.api;
 
 public class APIKey {
 
-	public static final String BASE_URL_DEV = "https://api.myjson.com/bins/";
+	public static final String BASE_URL_DEV = "https://wikipedigo-js.herokuapp.com/";
+	public static final String IMAGE_URL = "http://image.ibb.co/";
 }

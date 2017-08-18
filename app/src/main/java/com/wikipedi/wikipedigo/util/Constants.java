@@ -19,6 +19,7 @@ public class Constants {
 		public static String PREFS = "prefs";
 		public static String QUERY = "query";
 		public static String LIST = "list";
+		public static final int MAX_ITEM = 42;
 	}
 
 	public static class Sort {

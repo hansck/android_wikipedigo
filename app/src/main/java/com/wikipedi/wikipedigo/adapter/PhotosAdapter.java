@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.wikipedi.wikipedigo.model.Photo;
+import com.wikipedi.wikipedigo.util.Constants;
 import com.wikipedi.wikipedigo.util.OnItemSelectedListener;
 import com.wikipedi.wikipedigo.util.OnLastItemVisibleListener;
 import com.wikipedi.wikipedigo.view.ItemPhotoView;
@@ -19,15 +20,13 @@ import io.realm.RealmList;
 
 public class PhotosAdapter extends RecyclerViewAdapterBase<Photo, ItemPhotoView> {
 
-	private static final int MAX_ITEM = 42;
-
 	private int itemCount = 0;
 	private OnItemSelectedListener onItemSelectedListener;
 	private OnLastItemVisibleListener onLastItemVisibleListener;
 
 	public PhotosAdapter(Context context, RealmList<Photo> items) {
 		super(context, items);
-		itemCount = MAX_ITEM;
+		itemCount = Constants.Photo.MAX_ITEM;
 	}
 
 	public void setOnItemSelectedListener(OnItemSelectedListener onItemSelectedListener) {
@@ -82,7 +81,7 @@ public class PhotosAdapter extends RecyclerViewAdapterBase<Photo, ItemPhotoView>
 	}
 
 	public void showNextItems() {
-		itemCount += MAX_ITEM;
+		itemCount += Constants.Photo.MAX_ITEM;
 		if (itemCount > items.size()) {
 			itemCount = items.size();
 		}
@@ -94,7 +93,7 @@ public class PhotosAdapter extends RecyclerViewAdapterBase<Photo, ItemPhotoView>
 	}
 
 	private void resetItemCount() {
-		itemCount = MAX_ITEM;
+		itemCount = Constants.Photo.MAX_ITEM;
 		if (itemCount > items.size()) {
 			itemCount = items.size();
 		}

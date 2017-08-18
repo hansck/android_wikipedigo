@@ -1,8 +1,7 @@
 package com.wikipedi.wikipedigo.container;
 
-import android.util.Log;
-
 import com.wikipedi.wikipedigo.api.APIRequest;
+import com.wikipedi.wikipedigo.api.BaseResponse;
 import com.wikipedi.wikipedigo.model.Favorite;
 import com.wikipedi.wikipedigo.model.HiddenIgo;
 import com.wikipedi.wikipedigo.model.Photo;
@@ -12,8 +11,11 @@ import com.wikipedi.wikipedigo.util.Comparators;
 import com.wikipedi.wikipedigo.util.Constants;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.realm.Case;
 import io.realm.Realm;
@@ -48,19 +50,23 @@ public class PhotosContainer {
 	}
 
 	public void fetchPhotos(final Runnable onSuccess, final Runnable onFailure) {
-		APIRequest.getInstance().getService().getPhotos().enqueue(new Callback<List<Photo>>() {
+		Map<String, String> queries = new HashMap<>();
+		APIRequest.getInstance().getService().getPhotos(queries).enqueue(new Callback<BaseResponse<List<Photo>>>() {
 			@Override
-			public void onResponse(Call<List<Photo>> call, Response<List<Photo>> response) {
-				photos = new RealmList<>(response.body().toArray(new Photo[response.body().size()]));
-				if (realm.where(Photo.class).count() != photos.size()) {
-					insertIgo();
-					getAllIgo();
+			public void onResponse(Call<BaseResponse<List<Photo>>> call, Response<BaseResponse<List<Photo>>> response) {
+				List<Photo> fetchedPhotos = response.body().getValue();
+				if (fetchedPhotos != null && fetchedPhotos.size() > 0) {
+					photos = new RealmList<>(fetchedPhotos.toArray(new Photo[fetchedPhotos.size()]));
+					if (realm.where(Photo.class).count() != photos.size()) {
+						insertIgo();
+						getAllIgo();
+					}
 				}
 				onSuccess.run();
 			}
 
 			@Override
-			public void onFailure(Call<List<Photo>> call, Throwable t) {
+			public void onFailure(Call<BaseResponse<List<Photo>>> call, Throwable t) {
 				t.printStackTrace();
 				getAllIgo();
 				onFailure.run();
@@ -69,16 +75,25 @@ public class PhotosContainer {
 	}
 
 	public void updatePhotos(final Runnable onSuccess, final Runnable onFailure) {
-		APIRequest.getInstance().getService().getPhotos().enqueue(new Callback<List<Photo>>() {
+		Map<String, String> queries = new HashMap<>();
+		int year = Calendar.getInstance().get(Calendar.YEAR);
+		int month = Calendar.getInstance().get(Calendar.MONTH);
+		int date = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+		String fromQuery = year + "-" + month + "-" + date;
+		queries.put("from", fromQuery);
+		APIRequest.getInstance().getService().getPhotos(queries).enqueue(new Callback<BaseResponse<List<Photo>>>() {
 			@Override
-			public void onResponse(Call<List<Photo>> call, Response<List<Photo>> response) {
-				photos = new RealmList<>(response.body().toArray(new Photo[response.body().size()]));
-				insertIgo();
+			public void onResponse(Call<BaseResponse<List<Photo>>> call, Response<BaseResponse<List<Photo>>> response) {
+				List<Photo> fetchedPhotos = response.body().getValue();
+				if (fetchedPhotos != null && fetchedPhotos.size() > 0) {
+					photos = new RealmList<>(fetchedPhotos.toArray(new Photo[fetchedPhotos.size()]));
+					insertIgo();
+				}
 				onSuccess.run();
 			}
 
 			@Override
-			public void onFailure(Call<List<Photo>> call, Throwable t) {
+			public void onFailure(Call<BaseResponse<List<Photo>>> call, Throwable t) {
 				t.printStackTrace();
 				onFailure.run();
 			}
@@ -86,19 +101,22 @@ public class PhotosContainer {
 	}
 
 	public void fetchHiddenIgo() {
-		APIRequest.getInstance().getService().getHiddenIgo().enqueue(new Callback<List<HiddenIgo>>() {
+		APIRequest.getInstance().getService().getHiddenIgo().enqueue(new Callback<BaseResponse<List<HiddenIgo>>>() {
 			@Override
-			public void onResponse(Call<List<HiddenIgo>> call, Response<List<HiddenIgo>> response) {
-				hiddenIgos = new RealmList<>(response.body().toArray(new HiddenIgo[response.body().size()]));
-				if (realm.where(Photo.class).count() != photos.size()) {
-					insertHiddenIgo();
-					getAllHiddenIgo();
-					getFavoriteIgo();
+			public void onResponse(Call<BaseResponse<List<HiddenIgo>>> call, Response<BaseResponse<List<HiddenIgo>>> response) {
+				List<HiddenIgo> values = response.body().getValue();
+				if (values != null && values.size() > 0) {
+					hiddenIgos = new RealmList<>(values.toArray(new HiddenIgo[values.size()]));
+					if (realm.where(Photo.class).count() != photos.size()) {
+						insertHiddenIgo();
+						getAllHiddenIgo();
+						getFavoriteIgo();
+					}
 				}
 			}
 
 			@Override
-			public void onFailure(Call<List<HiddenIgo>> call, Throwable t) {
+			public void onFailure(Call<BaseResponse<List<HiddenIgo>>> call, Throwable t) {
 				t.printStackTrace();
 				getAllHiddenIgo();
 			}
@@ -119,8 +137,10 @@ public class PhotosContainer {
 
 	public void getAllIgo() {
 		photos.clear();
-		RealmResults<Photo> results = realm.where(Photo.class).findAllSorted(Constants.Photo.CREATED_AT, Sort.DESCENDING);
-		photos.addAll(getDistinctPhotos(results));
+		RealmResults<Photo> results = realm.where(Photo.class)
+			.findAllSorted(Constants.Photo.CREATED_AT, Sort.DESCENDING).distinct(Constants.Photo.NAME);
+//		photos.addAll(getDistinctPhotos(results));
+		photos.addAll(results);
 //		sortIgo();
 	}
 
@@ -151,8 +171,8 @@ public class PhotosContainer {
 				query = query.equalTo(Constants.Photo.NAME, fav.getName());
 				i++;
 			}
-			RealmResults<Photo> favResults = query.findAllSorted(Constants.Photo.CREATED_AT, Sort.DESCENDING);
-			favorites.addAll(getDistinctPhotos(favResults));
+			RealmResults<Photo> favResults = query.findAllSorted(Constants.Photo.CREATED_AT, Sort.DESCENDING).distinct(Constants.Photo.NAME);
+			favorites.addAll(favResults);
 		}
 	}
 
@@ -175,9 +195,9 @@ public class PhotosContainer {
 
 	public void searchAllIgo(String search, BaseRunnable<RealmList<Photo>> onFound) {
 		RealmResults<Photo> results = realm.where(Photo.class).contains(Constants.Photo.NAME, search, INSENSITIVE)
-			.findAllSorted(Constants.Photo.CREATED_AT, Sort.DESCENDING);
+			.findAllSorted(Constants.Photo.CREATED_AT, Sort.DESCENDING).distinct(Constants.Photo.NAME);
 		RealmList<Photo> result = new RealmList<>();
-		result.addAll(getDistinctPhotos(results));
+		result.addAll(results);
 		onFound.run(result);
 	}
 
@@ -194,8 +214,8 @@ public class PhotosContainer {
 				query = query.equalTo(Constants.Photo.NAME, fav.getName());
 				i++;
 			}
-			RealmResults<Photo> favResults = query.findAllSorted(Constants.Photo.CREATED_AT, Sort.DESCENDING);
-			result.addAll(getDistinctPhotos(favResults));
+			RealmResults<Photo> favResults = query.findAllSorted(Constants.Photo.CREATED_AT, Sort.DESCENDING).distinct(Constants.Photo.NAME);
+			result.addAll(favResults);
 		}
 		onFound.run(result);
 	}
@@ -251,31 +271,5 @@ public class PhotosContainer {
 				}
 				break;
 		}
-	}
-
-	private ArrayList<Photo> getDistinctPhotos(RealmResults<Photo> results) {
-		ArrayList<Photo> distinctPhotos = new ArrayList<>();
-		for (Photo p : results) {
-			boolean exist = false;
-			for (Photo distinct : distinctPhotos) {
-				if (p.getName().equals(distinct.getName())) {
-					exist = true;
-					break;
-				}
-			}
-			for (HiddenIgo hidden : hiddenIgos) {
-				if (p.getName().equals(hidden.getName())) {
-					exist = true;
-				}
-			}
-			if (!exist) {
-				setPopularity(p);
-				distinctPhotos.add(p);
-				if(distinctPhotos.size() == 350){
-					break;
-				}
-			}
-		}
-		return distinctPhotos;
 	}
 }

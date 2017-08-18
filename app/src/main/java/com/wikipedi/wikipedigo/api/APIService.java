@@ -1,11 +1,16 @@
 package com.wikipedi.wikipedigo.api;
 
+import android.util.SparseArray;
+
 import java.util.List;
+import java.util.Map;
 
 import com.wikipedi.wikipedigo.model.HiddenIgo;
 import com.wikipedi.wikipedigo.model.Photo;
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Query;
+import retrofit2.http.QueryMap;
 
 /**
  * Created by E460 on 12/01/2017.
@@ -14,9 +19,9 @@ import retrofit2.http.GET;
 
 public interface APIService {
 
-	@GET("vn4cb")
-	Call<List<Photo>> getPhotos();
+	@GET("wikipedigo")
+	Call<BaseResponse<List<Photo>>> getPhotos(@QueryMap Map<String, String> queries);
 
-	@GET("ruai1")
-	Call<List<HiddenIgo>> getHiddenIgo();
+	@GET("wikipedigo/hidden")
+	Call<BaseResponse<List<HiddenIgo>>> getHiddenIgo();
 }

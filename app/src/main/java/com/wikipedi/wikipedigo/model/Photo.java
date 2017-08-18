@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.wikipedi.wikipedigo.api.APIKey;
 
 import java.util.Date;
 
@@ -19,7 +20,7 @@ import io.realm.annotations.PrimaryKey;
 
 public class Photo extends RealmObject implements RealmModel, Parcelable {
 
-	@SerializedName("id")
+	@SerializedName("_id")
 	@Expose
 	@PrimaryKey
 	private String id;
@@ -33,7 +34,7 @@ public class Photo extends RealmObject implements RealmModel, Parcelable {
 	@Expose
 	private String videoLink;
 
-	@SerializedName("image")
+	@SerializedName("imageId")
 	@Expose
 	private String image;
 
@@ -76,7 +77,7 @@ public class Photo extends RealmObject implements RealmModel, Parcelable {
 	}
 
 	public String getImage() {
-		return image;
+		return APIKey.IMAGE_URL + image + "/" + image + ".jpg";
 	}
 
 	public void setImage(String image) {

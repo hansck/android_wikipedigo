@@ -10,9 +10,6 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wikipedi.wikipedigo.R;
-import com.wikipedi.wikipedigo.model.Photo;
-
-import static com.wikipedi.wikipedigo.R.id.dummyImage;
 
 /**
  * Created by E460 on 12/01/2017.
