@@ -1,13 +1,11 @@
 package com.wikipedi.wikipedigo.activity;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -18,7 +16,8 @@ import android.view.MenuItem;
 import com.wikipedi.wikipedigo.R;
 import com.wikipedi.wikipedigo.application.BaseApplication;
 import com.wikipedi.wikipedigo.fragment.TabFragment_;
-import com.wikipedi.wikipedigo.model.UserPreferences;
+import com.wikipedi.wikipedigo.model.manager.AdsManager;
+import com.wikipedi.wikipedigo.model.object.UserPreferences;
 import com.wikipedi.wikipedigo.util.ConnectivityReceiver;
 import com.wikipedi.wikipedigo.util.Constants;
 
@@ -39,6 +38,7 @@ public class MainActivity extends BaseActivity implements ConnectivityReceiver.C
 		}
 		SharedPreferences pref = getSharedPreferences(Constants.Photo.PREFS, Context.MODE_PRIVATE);
 		UserPreferences.getInstance().setKeyStore(pref);
+		AdsManager.getInstance().initAds(this);
 
 		fm = getSupportFragmentManager();
 		Fragment fragment = new TabFragment_();
@@ -100,7 +100,7 @@ public class MainActivity extends BaseActivity implements ConnectivityReceiver.C
 	private void requestRequiredPermission() {
 		if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) &&
 			ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-			requestPermissions(new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE,
+			requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
 				Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
 		}
 	}

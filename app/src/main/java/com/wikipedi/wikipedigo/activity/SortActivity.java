@@ -10,8 +10,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.wikipedi.wikipedigo.R;
-import com.wikipedi.wikipedigo.container.PhotosContainer;
-import com.wikipedi.wikipedigo.model.UserPreferences;
+import com.wikipedi.wikipedigo.model.manager.PhotosManager;
+import com.wikipedi.wikipedigo.model.object.UserPreferences;
 import com.wikipedi.wikipedigo.util.Constants;
 
 import org.androidannotations.annotations.AfterViews;
@@ -123,7 +123,7 @@ public class SortActivity extends AppCompatActivity {
 	//region Private methods
 	private void savePreferences() {
 		UserPreferences.getInstance().setPreferences(sortBy, sortMethod);
-		PhotosContainer.getInstance().sortIgo();
+		PhotosManager.getInstance().sortIgo();
 		backToList(true);
 	}
 

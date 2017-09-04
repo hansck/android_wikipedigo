@@ -5,26 +5,27 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.wikipedi.wikipedigo.model.Photo;
+import com.wikipedi.wikipedigo.model.object.Photo;
 import com.wikipedi.wikipedigo.util.Constants;
 import com.wikipedi.wikipedigo.util.OnItemSelectedListener;
 import com.wikipedi.wikipedigo.util.OnLastItemVisibleListener;
-import com.wikipedi.wikipedigo.view.ItemPhotoView;
-import com.wikipedi.wikipedigo.view.ItemPhotoView_;
+import com.wikipedi.wikipedigo.view.ItemStaggeredView;
+import com.wikipedi.wikipedigo.view.ItemStaggeredView_;
 import com.wikipedi.wikipedigo.view.ViewWrapper;
+
 import io.realm.RealmList;
 
 /**
- * Created by E460 on 17/01/2017.
+ * Created by E460 on 24/08/2017.
  */
 
-public class PhotosAdapter extends RecyclerViewAdapterBase<Photo, ItemPhotoView> {
+public class PhotosTimelineAdapter extends RecyclerViewAdapterBase<Photo, ItemStaggeredView> {
 
 	private int itemCount = 0;
 	private OnItemSelectedListener onItemSelectedListener;
 	private OnLastItemVisibleListener onLastItemVisibleListener;
 
-	public PhotosAdapter(Context context, RealmList<Photo> items) {
+	public PhotosTimelineAdapter(Context context, RealmList<Photo> items) {
 		super(context, items);
 		itemCount = Constants.Photo.MAX_ITEM;
 	}
@@ -38,12 +39,12 @@ public class PhotosAdapter extends RecyclerViewAdapterBase<Photo, ItemPhotoView>
 	}
 
 	@Override
-	protected ItemPhotoView onCreateItemView(ViewGroup parent, int viewType) {
-		return ItemPhotoView_.build(context);
+	protected ItemStaggeredView onCreateItemView(ViewGroup parent, int viewType) {
+		return ItemStaggeredView_.build(context);
 	}
 
 	@Override
-	public void onBindViewHolder(final ViewWrapper<ItemPhotoView> holder, final int position) {
+	public void onBindViewHolder(final ViewWrapper<ItemStaggeredView> holder, final int position) {
 		Photo item = getItem(position);
 		if (item != null) {
 			holder.getView().bind(getItem(position));

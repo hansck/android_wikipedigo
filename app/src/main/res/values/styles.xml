@@ -3,23 +3,23 @@
 	<!-- Base application theme. -->
 	<style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
 		<!-- Customize your theme here. -->
-		<item name="colorPrimary">@color/colorPrimary</item>
-		<item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-		<item name="colorAccent">@color/colorAccent</item>
+		<item name="colorPrimary">@color/color_primary</item>
+		<item name="colorPrimaryDark">@color/color_primary_dark</item>
+		<item name="colorAccent">@color/color_accent</item>
 		<item name="android:actionOverflowButtonStyle">@style/MenuItemTheme</item>
 	</style>
 
 	<style name="LinkAppearance" parent="ProfileBaseAppearance">
 		<item name="android:clickable">true</item>
-		<item name="android:textSize">@dimen/text_normal</item>
+		<item name="android:textSize">@dimen/text_body</item>
 	</style>
 
 	<style name="FavoriteAppearance" parent="ProfileBaseAppearance">
-		<item name="android:textSize">@dimen/text_normal</item>
+		<item name="android:textSize">@dimen/text_body</item>
 	</style>
 
 	<style name="NameAppearance" parent="ProfileBaseAppearance">
-		<item name="android:textSize">@dimen/text_header</item>
+		<item name="android:textSize">@dimen/text_subheading</item>
 		<item name="android:ellipsize">marquee</item>
 	</style>
 
@@ -46,27 +46,69 @@
 	</style>
 
 	<style name="CustomTab" parent="Widget.Design.TabLayout">
+		<item name="android:layout_width">match_parent</item>
+		<item name="android:layout_height">wrap_content</item>
 		<item name="tabTextAppearance">@style/CustomTabText</item>
-		<item name="tabSelectedTextColor">@color/colorAccent</item>
+		<item name="tabSelectedTextColor">@color/color_accent</item>
+		<item name="tabIndicatorColor">@color/color_accent</item>
+		<item name="android:minHeight">?attr/actionBarSize</item>
+		<item name="android:textStyle">bold</item>
+		<item name="tabGravity">fill</item>
+		<item name="tabTextColor">@color/border</item>
+		<item name="tabMode">fixed</item>
+		<item name="tabBackground">@drawable/bg_tab</item>
 	</style>
 
 	<style name="CustomTabText" parent="TextAppearance.AppCompat.Button">
-		<item name="android:textSize">@dimen/text_normal</item>
-		<item name="android:textColor">@color/dark_grey</item>
+		<item name="android:textSize">@dimen/text_body</item>
+		<item name="android:textColor">@color/text_light_2</item>
 	</style>
 
-	<style name="SectionText">
+	<style name="SeparatorLayout">
 		<item name="android:layout_width">match_parent</item>
-		<item name="android:layout_height">wrap_content</item>
-		<item name="android:textColor">@color/dark_grey</item>
-		<item name="android:textSize">@dimen/text_normal</item>
+		<item name="android:layout_height">@dimen/margin_bit</item>
+		<item name="android:background">@color/color_accent</item>
 	</style>
 
-	<style name="TitleText">
+	<!-- Text -->
+	<style name="CaptionRegular">
+		<item name="android:layout_width">wrap_content</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:textColor">@color/text_light_1</item>
+		<item name="android:textSize">@dimen/text_caption</item>
+	</style>
+
+	<style name="CaptionMedium" parent="CaptionRegular">
+		<item name="android:textStyle">bold</item>
+	</style>
+
+	<style name="ParentText">
 		<item name="android:layout_width">match_parent</item>
 		<item name="android:layout_height">wrap_content</item>
-		<item name="android:textColor">@color/dark_grey</item>
-		<item name="android:textSize">@dimen/text_header</item>
+		<item name="android:textColor">@color/text_dark</item>
+	</style>
+
+	<style name="BodyRegular" parent="ParentText">
+		<item name="android:textSize">@dimen/text_body</item>
+	</style>
+
+	<style name="BodyMedium" parent="BodyRegular">
+		<item name="android:textStyle">bold</item>
+	</style>
+
+	<style name="SubheadingRegular" parent="ParentText">
+		<item name="android:textSize">@dimen/text_subheading</item>
+	</style>
+
+	<style name="SubheadingMedium" parent="SubheadingRegular">
+		<item name="android:textStyle">bold</item>
+	</style>
+
+	<style name="TitleRegular" parent="ParentText">
+		<item name="android:textSize">@dimen/text_title</item>
+	</style>
+
+	<style name="TitleMedium" parent="TitleRegular">
 		<item name="android:textStyle">bold</item>
 	</style>
 </resources>

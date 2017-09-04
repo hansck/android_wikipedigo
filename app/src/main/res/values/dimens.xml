@@ -3,18 +3,21 @@
 	<dimen name="activity_horizontal_margin">16dp</dimen>
 	<dimen name="activity_vertical_margin">16dp</dimen>
 
-	<dimen name="item_padding">10dp</dimen>
+	<dimen name="progress_bar_large">75dp</dimen>
+	<dimen name="progress_bar_small">35dp</dimen>
 	<dimen name="item_photo_list_height">100dp</dimen>
 	<dimen name="item_photo_list_width">100dp</dimen>
-	<dimen name="item_photo_side_small">100dp</dimen>
-	<dimen name="item_photo_side_medium">150dp</dimen>
-	<dimen name="item_photo_side_large">200dp</dimen>
 	<dimen name="item_photo_slide">400dp</dimen>
+
 	<dimen name="margin_bit">1dp</dimen>
 	<dimen name="margin_tiny">4dp</dimen>
 	<dimen name="margin_small">8dp</dimen>
+	<dimen name="margin_normal">12dp</dimen>
 	<dimen name="margin_medium">16dp</dimen>
 	<dimen name="margin_large">32dp</dimen>
-	<dimen name="text_header">18sp</dimen>
-	<dimen name="text_normal">14sp</dimen>
+
+	<dimen name="text_title">20sp</dimen>
+	<dimen name="text_subheading">16sp</dimen>
+	<dimen name="text_body">14sp</dimen>
+	<dimen name="text_caption">12sp</dimen>
 </resources>

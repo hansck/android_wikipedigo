@@ -1,21 +1,22 @@
-package com.wikipedi.wikipedigo.model;
+package com.wikipedi.wikipedigo.model.manager;
+
+import com.wikipedi.wikipedigo.util.Constants;
 
 /**
  * Created by Hans CK on 10-Feb-17.
  */
 
-public class PhotoClickContainer {
+public class PhotoClickManager {
 
-	private static PhotoClickContainer instance = new PhotoClickContainer();
-	private static final int MAX_CLICKS = 3;
+	private static PhotoClickManager instance = new PhotoClickManager();
 
 	private int clicks;
 
-	public PhotoClickContainer() {
+	public PhotoClickManager() {
 
 	}
 
-	public static PhotoClickContainer getInstance() {
+	public static PhotoClickManager getInstance() {
 		return instance;
 	}
 
@@ -28,7 +29,7 @@ public class PhotoClickContainer {
 	}
 
 	public boolean checkClicks() {
-		if (clicks == MAX_CLICKS) {
+		if (clicks == Constants.Ads.MAX_CLICK) {
 			clicks = 0;
 			return true;
 		} else {

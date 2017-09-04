@@ -7,59 +7,80 @@
 	android:orientation="vertical">
 
 	<RelativeLayout
-		android:id="@+id/listContainer"
+		android:id="@+id/galleryContainer"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_alignParentBottom="true"
-		android:layout_marginTop="@dimen/item_padding">
+		android:layout_alignParentBottom="true">
 
-		<TextView
-			android:id="@+id/labelGallery"
+		<RelativeLayout
+			android:id="@+id/titleContainer"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:paddingLeft="20dp"
-			android:paddingRight="20dp"
-			android:text="@string/gallery"
-			android:textColor="@color/black"
-			android:textSize="20dp"/>
+			android:layout_marginTop="@dimen/margin_small">
+
+			<TextView
+				android:id="@+id/labelGallery"
+				style="@style/SubheadingMedium"
+				android:layout_width="wrap_content"
+				android:layout_centerHorizontal="true"
+				android:layout_marginLeft="@dimen/margin_small"
+				android:layout_marginRight="@dimen/margin_small"
+				android:gravity="center"
+				android:text="@string/gallery"/>
+
+			<View
+				android:id="@+id/separatorLeft"
+				style="@style/SeparatorLayout"
+				android:layout_centerVertical="true"
+				android:layout_marginLeft="@dimen/margin_small"
+				android:layout_marginStart="@dimen/margin_small"
+				android:layout_toLeftOf="@id/labelGallery"
+				android:layout_toStartOf="@id/labelGallery"/>
+
+			<View
+				android:id="@+id/separatorRight"
+				style="@style/SeparatorLayout"
+				android:layout_centerVertical="true"
+				android:layout_marginEnd="@dimen/margin_small"
+				android:layout_marginRight="@dimen/margin_small"
+				android:layout_toEndOf="@id/labelGallery"
+				android:layout_toRightOf="@id/labelGallery"/>
+		</RelativeLayout>
 
 		<android.support.v7.widget.RecyclerView
 			android:id="@+id/imageList"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_below="@id/labelGallery"
-			android:layout_marginLeft="@dimen/item_padding"
-			android:layout_marginRight="@dimen/item_padding"
-			android:layout_marginTop="5dp"
+			android:layout_below="@id/titleContainer"
+			android:layout_marginLeft="@dimen/margin_small"
+			android:layout_marginRight="@dimen/margin_small"
+			android:layout_marginTop="@dimen/margin_tiny"
 			android:scrollbars="horizontal"/>
 
 		<com.viewpagerindicator.CirclePageIndicator
 			android:id="@+id/index"
+			ng="@dimen/margin_small"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:layout_below="@id/imageList"
 			android:layout_centerHorizontal="true"
 			android:layout_marginTop="5dp"
-			android:paddingBottom="@dimen/item_padding"
-			app:fillColor="@color/dark_grey"/>
+			android:paddingBottom="@dimen/margin_small"
+			app:fillColor="@color/color_primary"
+			app:pageColor="@color/white"
+			app:strokeColor="@color/color_primary"/>
 	</RelativeLayout>
 
 	<RelativeLayout
 		android:id="@+id/slideContainer"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_above="@id/listContainer">
+		android:layout_above="@id/galleryContainer"
+		android:layout_marginTop="@dimen/margin_small">
 
 		<android.support.v4.view.ViewPager
 			android:id="@+id/currentPhoto"
 			android:layout_width="match_parent"
 			android:layout_height="400dp"/>
 	</RelativeLayout>
-
-	<ImageView
-		android:id="@+id/dummyImage"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_below="@id/slideContainer"
-		android:visibility="gone"/>
 </RelativeLayout>

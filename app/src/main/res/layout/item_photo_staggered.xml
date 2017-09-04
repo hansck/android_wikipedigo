@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/background"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:background="@drawable/clickable_bg"
+	android:paddingBottom="@dimen/margin_medium"
+	tools:ignore="ContentDescription">
+
+	<TextView
+		android:id="@+id/name"
+		style="@style/BodyMedium"
+		android:ellipsize="marquee"
+		android:gravity="start"
+		android:maxLines="2"
+		android:paddingBottom="@dimen/margin_bit"
+		android:paddingLeft="@dimen/margin_tiny"
+		android:paddingRight="@dimen/margin_tiny"
+		tools:text="IGO Name"/>
+
+	<TextView
+		android:id="@+id/date"
+		style="@style/CaptionRegular"
+		android:layout_below="@id/name"
+		android:ellipsize="marquee"
+		android:paddingBottom="@dimen/margin_bit"
+		android:paddingLeft="@dimen/margin_tiny"
+		android:paddingRight="@dimen/margin_tiny"
+		android:textSize="@dimen/text_caption"
+		tools:text="24 August 2017"/>
+
+	<RelativeLayout
+		android:id="@+id/imageContainer"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/date">
+
+		<!--<ProgressBar-->
+		<!--android:id="@+id/progress"-->
+		<!--android:layout_width="@dimen/progress_bar_large"-->
+		<!--android:layout_height="@dimen/progress_bar_large"-->
+		<!--android:layout_centerInParent="true"-->
+		<!--android:visibility="visible"/>-->
+
+		<ImageView
+			android:id="@+id/image"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:adjustViewBounds="true"/>
+	</RelativeLayout>
+</RelativeLayout>

@@ -19,15 +19,15 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
 import com.wikipedi.wikipedigo.R;
 import com.wikipedi.wikipedigo.activity.PhotoDetailActivity_;
 import com.wikipedi.wikipedigo.activity.SortActivity_;
-import com.wikipedi.wikipedigo.adapter.PhotosAdapter;
-import com.wikipedi.wikipedigo.container.PhotosContainer;
-import com.wikipedi.wikipedigo.model.Photo;
+import com.wikipedi.wikipedigo.adapter.PhotosGridAdapter;
+import com.wikipedi.wikipedigo.adapter.PhotosTimelineAdapter;
+import com.wikipedi.wikipedigo.model.manager.AdsManager;
+import com.wikipedi.wikipedigo.model.manager.PhotosManager;
+import com.wikipedi.wikipedigo.model.object.Photo;
 import com.wikipedi.wikipedigo.util.BaseRunnable;
 import com.wikipedi.wikipedigo.util.Common;
 import com.wikipedi.wikipedigo.util.Constants;
@@ -46,7 +46,8 @@ import io.realm.RealmList;
 public class PhotoListFragment extends BaseFragment {
 
 	private String search;
-	private PhotosAdapter adapter;
+	private PhotosGridAdapter gridAdapter;
+	private PhotosTimelineAdapter timelineAdapter;
 	private SearchView searchView;
 	private MenuItem searchItem;
 
@@ -81,39 +82,55 @@ public class PhotoListFragment extends BaseFragment {
 	// region Listeners
 	@AfterViews
 	void initViews() {
-		if (PhotosContainer.getInstance().getHiddenIgos().size() == 0) {
-			PhotosContainer.getInstance().fetchHiddenIgo();
+		if (PhotosManager.getInstance().getPhotos().size() == 0) {
+			initPhotos();
 		}
-		if (getTabIndex() == Constants.General.TAB_GALLERY) {
-			PhotosContainer.getInstance().getAllHiddenIgo();
-			PhotosContainer.getInstance().getAllIgo();
-			adapter = new PhotosAdapter(getContext(), PhotosContainer.getInstance().getPhotos());
-		} else if (getTabIndex() == Constants.General.TAB_FAVORITE) {
-			PhotosContainer.getInstance().getFavoriteIgo();
-			adapter = new PhotosAdapter(getContext(), PhotosContainer.getInstance().getFavorites());
+		if (PhotosManager.getInstance().getHiddenIgos().size() == 0) {
+			PhotosManager.getInstance().fetchHiddenIgo();
 		}
-		adapter.setOnItemSelectedListener(onItemSelected);
-		adapter.setOnLastItemVisibleListener(onLastItemVisible);
-		container.setAdapter(adapter);
-		GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 3, LinearLayoutManager.VERTICAL, false);
+		swipeRefreshLayout.setOnRefreshListener(onRefreshListener);
+
+		adView.loadAd(AdsManager.getInstance().loadBannerAds());
+	}
+
+	@AfterViews
+	void initPhotoList() {
+		RecyclerView.LayoutManager layoutManager;
+		if (getTabIndex() == Constants.General.TAB_TIMELINE) {
+			PhotosManager.getInstance().getTimelineIgo();
+			layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+			timelineAdapter = new PhotosTimelineAdapter(getContext(), PhotosManager.getInstance().getPhotos());
+			timelineAdapter.setOnItemSelectedListener(onItemSelected);
+			timelineAdapter.setOnLastItemVisibleListener(onLastItemVisible);
+			container.setAdapter(timelineAdapter);
+		} else {
+			layoutManager = new GridLayoutManager(getContext(), 3, LinearLayoutManager.VERTICAL, false);
+			if (getTabIndex() == Constants.General.TAB_GALLERY) {
+				PhotosManager.getInstance().getAllHiddenIgo();
+				PhotosManager.getInstance().getIgoByPerson();
+				gridAdapter = new PhotosGridAdapter(getContext(), PhotosManager.getInstance().getPhotos());
+			} else if (getTabIndex() == Constants.General.TAB_FAVORITE) {
+				PhotosManager.getInstance().getFavoriteIgo();
+				gridAdapter = new PhotosGridAdapter(getContext(), PhotosManager.getInstance().getFavorites());
+			}
+			gridAdapter.setOnItemSelectedListener(onItemSelected);
+			gridAdapter.setOnLastItemVisibleListener(onLastItemVisible);
+			container.setAdapter(gridAdapter);
+		}
 		container.setLayoutManager(layoutManager);
 		container.addOnScrollListener(new RecyclerView.OnScrollListener() {
 			@Override
 			public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
 				super.onScrollStateChanged(recyclerView, newState);
 				if (newState == RecyclerView.SCROLL_STATE_SETTLING) {
-					adapter.showNextItems();
+					if (getTabIndex() == Constants.General.TAB_TIMELINE) {
+						timelineAdapter.showNextItems();
+					} else {
+						gridAdapter.showNextItems();
+					}
 				}
 			}
 		});
-		if (PhotosContainer.getInstance().getPhotos().size() == 0) {
-			initPhotos();
-		}
-		swipeRefreshLayout.setOnRefreshListener(onRefreshListener);
-
-		MobileAds.initialize(getActivity(), getString(R.string.list_banner));
-		AdRequest adRequest = new AdRequest.Builder().build();
-		adView.loadAd(adRequest);
 	}
 
 	@IgnoreWhen(IgnoreWhen.State.VIEW_DESTROYED)
@@ -196,7 +213,7 @@ public class PhotoListFragment extends BaseFragment {
 			adView.resume();
 		}
 		if (getTabIndex() == Constants.General.TAB_FAVORITE) {
-			adapter.setItems(PhotosContainer.getInstance().getFavorites());
+			gridAdapter.setItems(PhotosManager.getInstance().getFavorites());
 		}
 	}
 
@@ -228,7 +245,7 @@ public class PhotoListFragment extends BaseFragment {
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == 1) {
 			if (resultCode == Activity.RESULT_OK) {
-				adapter.refresh();
+				gridAdapter.refresh();
 			}
 		}
 	}
@@ -237,27 +254,38 @@ public class PhotoListFragment extends BaseFragment {
 	//region Private methods
 	private void initPhotos() {
 		setLoading(true);
-		PhotosContainer.getInstance().fetchPhotos(new Runnable() {
+		PhotosManager.getInstance().fetchPhotos(new Runnable() {
 			@Override
 			public void run() {
-				adapter.setItems(PhotosContainer.getInstance().getPhotos());
+				setItems(PhotosManager.getInstance().getPhotos());
 				setLoading(false);
 			}
 		}, new Runnable() {
 			@Override
 			public void run() {
-				adapter.setItems(PhotosContainer.getInstance().getPhotos());
+				setItems(PhotosManager.getInstance().getPhotos());
 				setLoading(false);
 			}
 		});
 	}
 
 	private void searchPhoto(String query) {
-		if (getTabIndex() == Constants.General.TAB_GALLERY) {
+		if (getTabIndex() == Constants.General.TAB_TIMELINE) {
 			if (query.trim().length() == 0) {
-				adapter.setItems(PhotosContainer.getInstance().getPhotos());
+				timelineAdapter.setItems(PhotosManager.getInstance().getPhotos());
 			} else {
-				PhotosContainer.getInstance().searchAllIgo(query, new BaseRunnable<RealmList<Photo>>() {
+				PhotosManager.getInstance().searchAllIgo(query, new BaseRunnable<RealmList<Photo>>() {
+					@Override
+					public void run(RealmList<Photo> object) {
+						setSearchResult(object);
+					}
+				});
+			}
+		} else if (getTabIndex() == Constants.General.TAB_GALLERY) {
+			if (query.trim().length() == 0) {
+				gridAdapter.setItems(PhotosManager.getInstance().getPhotos());
+			} else {
+				PhotosManager.getInstance().searchAllIgo(query, new BaseRunnable<RealmList<Photo>>() {
 					@Override
 					public void run(RealmList<Photo> object) {
 						setSearchResult(object);
@@ -266,9 +294,9 @@ public class PhotoListFragment extends BaseFragment {
 			}
 		} else if (getTabIndex() == Constants.General.TAB_FAVORITE) {
 			if (query.trim().length() == 0) {
-				adapter.setItems(PhotosContainer.getInstance().getFavorites());
+				gridAdapter.setItems(PhotosManager.getInstance().getFavorites());
 			} else {
-				PhotosContainer.getInstance().searchFavoriteIgo(query, new BaseRunnable<RealmList<Photo>>() {
+				PhotosManager.getInstance().searchFavoriteIgo(query, new BaseRunnable<RealmList<Photo>>() {
 					@Override
 					public void run(RealmList<Photo> object) {
 						setSearchResult(object);
@@ -284,7 +312,15 @@ public class PhotoListFragment extends BaseFragment {
 		} else {
 			setAlert(false);
 		}
-		adapter.setItems(object);
+		setItems(object);
+	}
+
+	private void setItems(RealmList<Photo> object) {
+		if (getTabIndex() == Constants.General.TAB_TIMELINE) {
+			timelineAdapter.setItems(object);
+		} else {
+			gridAdapter.setItems(object);
+		}
 	}
 
 	private void showPhotoDetail(Photo photo) {
@@ -310,14 +346,18 @@ public class PhotoListFragment extends BaseFragment {
 			if (swipeRefreshLayout.isRefreshing()) {
 				swipeRefreshLayout.setRefreshing(false);
 			}
-			showPhotoDetail(adapter.getItem(position));
+			if (getTabIndex() == Constants.General.TAB_TIMELINE) {
+				showPhotoDetail(timelineAdapter.getItem(position));
+			} else {
+				showPhotoDetail(gridAdapter.getItem(position));
+			}
 		}
 	};
 
 	OnLastItemVisibleListener onLastItemVisible = new OnLastItemVisibleListener() {
 		@Override
 		public void onLastItemVisible() {
-			adapter.showNextItems();
+			gridAdapter.showNextItems();
 		}
 	};
 
@@ -340,16 +380,20 @@ public class PhotoListFragment extends BaseFragment {
 	SwipeRefreshLayout.OnRefreshListener onRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
 		@Override
 		public void onRefresh() {
-			PhotosContainer.getInstance().fetchHiddenIgo();
-			if (getTabIndex() == Constants.General.TAB_GALLERY) {
-				PhotosContainer.getInstance().updatePhotos(new Runnable() {
+			PhotosManager.getInstance().fetchHiddenIgo();
+			if (getTabIndex() == Constants.General.TAB_FAVORITE) {
+				PhotosManager.getInstance().getFavoriteIgo();
+				gridAdapter.refresh();
+				swipeRefreshLayout.setRefreshing(false);
+			} else {
+				PhotosManager.getInstance().updatePhotos(new Runnable() {
 					@Override
 					public void run() {
 						if (swipeRefreshLayout != null) {
 							if (swipeRefreshLayout.isRefreshing()) {
 								swipeRefreshLayout.setRefreshing(false);
-								PhotosContainer.getInstance().getAllIgo();
-								adapter.setItems(PhotosContainer.getInstance().getPhotos());
+								PhotosManager.getInstance().getIgoByPerson();
+								setItems(PhotosManager.getInstance().getPhotos());
 							}
 						}
 					}
@@ -360,14 +404,10 @@ public class PhotoListFragment extends BaseFragment {
 							if (swipeRefreshLayout.isRefreshing()) {
 								swipeRefreshLayout.setRefreshing(false);
 							}
-							Common.getInstance().showSnackbar(getActivity(), getString(R.string.no_internet));
+							Common.getInstance().showErrorMessage(getActivity());
 						}
 					}
 				});
-			} else if (getTabIndex() == Constants.General.TAB_FAVORITE) {
-				PhotosContainer.getInstance().getFavoriteIgo();
-				adapter.refresh();
-				swipeRefreshLayout.setRefreshing(false);
 			}
 		}
 	};

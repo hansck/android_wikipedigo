@@ -8,12 +8,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.wikipedi.wikipedigo.R;
-import com.wikipedi.wikipedigo.model.Photo;
+import com.wikipedi.wikipedigo.model.object.Photo;
 import com.wikipedi.wikipedigo.util.Common;
 
 import java.util.List;
-
-import uk.co.jakelee.vidsta.VidstaPlayer;
 
 public class PhotoSlideAdapter extends PagerAdapter {
 
@@ -35,22 +33,6 @@ public class PhotoSlideAdapter extends PagerAdapter {
 		imageView = (ImageView) layout.findViewById(R.id.photo);
 		showPhoto(imageView, position);
 		collection.addView(layout);
-
-		// add video listener
-		layout.setTag(position);
-		VidstaPlayer videoView = (VidstaPlayer) layout.findViewById(R.id.video);
-		if (null != photos.get(position).getVideoLink()) {
-			String videoUrl = photos.get(position).getVideoLink();
-			videoView.setVisibility(View.VISIBLE);
-			imageView.setVisibility(View.GONE);
-
-			videoView.setVideoSource(videoUrl);
-			videoView.requestFocus();
-			videoView.start();
-		} else {
-			videoView.setVisibility(View.GONE);
-			imageView.setVisibility(View.VISIBLE);
-		}
 		return layout;
 	}
 
@@ -71,12 +53,5 @@ public class PhotoSlideAdapter extends PagerAdapter {
 
 	private void showPhoto(ImageView photo, int position) {
 		Common.getInstance().setImage(context, photo, photos.get(position).getImage());
-	}
-
-	public void onPageScrolled(View view) {
-		VidstaPlayer videoView = (VidstaPlayer) view.findViewById(R.id.video);
-		if (videoView != null && videoView.isPlaying()) {
-			videoView.pause();
-		}
 	}
 }

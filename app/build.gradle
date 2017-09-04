@@ -15,6 +15,7 @@ android {
         versionCode 2
         versionName "1.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     buildTypes {
         debug {
@@ -25,6 +26,10 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    buildTypes.each {
+        it.buildConfigField "String", "TWITTER_CONSUMER_KEY", '"dcKniATiTjQ0dRaeyW4CEgc4Y"'
+        it.buildConfigField "String", "TWITTER_CONSUMER_SECRET", '"gdOuwFVt2EvUhNiEwrXsnfgurKlyEmqKKEtgTldpAnI6d45uTX"'
     }
 }
 
@@ -43,12 +48,9 @@ dependencies {
     compile 'com.google.code.gson:gson:2.7'
     compile 'com.squareup.retrofit2:converter-gson:2.0.2'
     compile 'com.squareup.retrofit2:retrofit:2.0.2'
-//    compile 'com.facebook.stetho:stetho:1.4.2'
-//    compile 'com.uphyca:stetho_realm:2.0.0'
-    compile 'uk.co.jakelee:vidsta:1.0.0'
+    compile 'com.facebook.stetho:stetho:1.4.2'
+    compile 'com.uphyca:stetho_realm:2.0.0'
     compile 'fr.avianey.com.viewpagerindicator:library:2.4.1.1@aar'
-    compile 'com.google.android.gms:play-services-ads:10.2.0'
-    compile 'com.facebook.android:facebook-android-sdk:4.5.0'
+    compile 'com.google.android.gms:play-services-ads:11.2.0'
     compile('com.crashlytics.sdk.android:crashlytics:2.6.6@aar') { transitive = true; }
-    compile('com.twitter.sdk.android:twitter:2.3.1@aar') { transitive = true; }
 }

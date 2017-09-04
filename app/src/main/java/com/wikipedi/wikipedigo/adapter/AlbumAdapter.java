@@ -1,13 +1,12 @@
 package com.wikipedi.wikipedigo.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.List;
 
-import com.wikipedi.wikipedigo.model.Photo;
+import com.wikipedi.wikipedigo.model.object.Photo;
 import com.wikipedi.wikipedigo.util.OnListItemSelected;
 import com.wikipedi.wikipedigo.view.ItemAlbumView;
 import com.wikipedi.wikipedigo.view.ItemAlbumView_;

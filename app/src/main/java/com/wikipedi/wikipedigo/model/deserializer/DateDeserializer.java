@@ -18,7 +18,7 @@ public class DateDeserializer implements JsonDeserializer<Date> {
 	@Override
 	public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
 		try {
-			return (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)).parse(json.getAsString());
+			return (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US)).parse(json.getAsString());
 		} catch (ParseException e) {
 			e.printStackTrace();
 			return context.deserialize(json, Date.class);

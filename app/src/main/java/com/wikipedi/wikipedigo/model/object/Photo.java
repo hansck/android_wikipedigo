@@ -1,4 +1,4 @@
-package com.wikipedi.wikipedigo.model;
+package com.wikipedi.wikipedigo.model.object;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -30,10 +30,6 @@ public class Photo extends RealmObject implements RealmModel, Parcelable {
 	@Index
 	private String name;
 
-	@SerializedName("video_link")
-	@Expose
-	private String videoLink;
-
 	@SerializedName("imageId")
 	@Expose
 	private String image;
@@ -46,34 +42,42 @@ public class Photo extends RealmObject implements RealmModel, Parcelable {
 	@Expose
 	private int favoriteCount;
 
+	@SerializedName("width")
+	@Expose
+	private int width;
+
+	@SerializedName("height")
+	@Expose
+	private int height;
+
+	@SerializedName("hidden")
+	@Expose
+	private boolean hidden;
+
 	private int popularity;
 
 	public Photo() {
 
 	}
 
-	public Photo(String name, String videoLink, String image, Date createdAt, int popularity) {
+	public Photo(String name, String image, Date createdAt, int popularity, int width, int height, boolean hidden) {
 		this.name = name;
-		this.videoLink = videoLink;
 		this.image = image;
 		this.createdAt = createdAt;
 		this.popularity = popularity;
+		this.width = width;
+		this.height = height;
+		this.hidden = hidden;
 	}
 
+
+	//region Getter Setter
 	public String getName() {
 		return name;
 	}
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public String getVideoLink() {
-		return videoLink;
-	}
-
-	public void setVideoLink(String videoLink) {
-		this.videoLink = videoLink;
 	}
 
 	public String getImage() {
@@ -116,32 +120,32 @@ public class Photo extends RealmObject implements RealmModel, Parcelable {
 		this.popularity = popularity;
 	}
 
-	@Override
-	public int describeContents() {
-		return 0;
+	public int getWidth() {
+		return width;
 	}
 
-	@Override
-	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeString(id);
-		dest.writeString(name);
-		dest.writeString(videoLink);
-		dest.writeString(image);
-		dest.writeInt(favoriteCount);
-		dest.writeLong(createdAt.getTime());
-		dest.writeInt(popularity);
+	public void setWidth(int width) {
+		this.width = width;
 	}
 
-	protected Photo(Parcel in) {
-		id = in.readString();
-		name = in.readString();
-		videoLink = in.readString();
-		image = in.readString();
-		favoriteCount = in.readInt();
-		createdAt = new Date(in.readLong());
-		popularity = in.readInt();
+	public int getHeight() {
+		return height;
 	}
 
+	public void setHeight(int height) {
+		this.height = height;
+	}
+
+	public boolean isHidden() {
+		return hidden;
+	}
+
+	public void setHidden(boolean hidden) {
+		this.hidden = hidden;
+	}
+	//endregion
+
+	//region Parcelable
 	public static final Creator<Photo> CREATOR = new Creator<Photo>() {
 		@Override
 		public Photo createFromParcel(Parcel in) {
@@ -153,4 +157,35 @@ public class Photo extends RealmObject implements RealmModel, Parcelable {
 			return new Photo[size];
 		}
 	};
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeString(id);
+		dest.writeString(name);
+		dest.writeString(image);
+		dest.writeInt(favoriteCount);
+		dest.writeLong(createdAt.getTime());
+		dest.writeInt(popularity);
+		dest.writeInt(width);
+		dest.writeInt(height);
+		dest.writeByte((byte) (hidden ? 1 : 0));
+	}
+
+	protected Photo(Parcel in) {
+		id = in.readString();
+		name = in.readString();
+		image = in.readString();
+		favoriteCount = in.readInt();
+		createdAt = new Date(in.readLong());
+		popularity = in.readInt();
+		width = in.readInt();
+		height = in.readInt();
+		hidden = in.readByte() != 0;
+	}
+	//endregion
 }

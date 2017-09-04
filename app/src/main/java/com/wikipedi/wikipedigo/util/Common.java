@@ -26,13 +26,21 @@ public class Common {
 	private Common() {
 	}
 
-	public void showSnackbar(Activity activity, String text) {
+	public void showAlert(Activity activity, String text) {
 		try {
 			Snackbar.make(activity.getCurrentFocus(), text, Snackbar.LENGTH_LONG).show();
 		} catch (NullPointerException e) {
 			e.printStackTrace();
 			View view = activity.getWindow().getDecorView().findViewById(R.id.content);
 			if (view != null) Snackbar.make(view, text, Snackbar.LENGTH_SHORT).show();
+		}
+	}
+
+	public void showErrorMessage(Activity activity) {
+		if (!ConnectivityUtil.getInstance().isNetworkConnected()) {
+			showAlert(activity, activity.getString(R.string.no_internet_alert));
+		} else {
+			showAlert(activity, activity.getString(R.string.failed_request_general));
 		}
 	}
 
@@ -50,7 +58,15 @@ public class Common {
 	public void setImage(Context context, ImageView view, String url) {
 		Glide.with(context)
 			.load(url)
-			.animate(R.anim.grow_from_middle)
+			.crossFade(300)
+			.diskCacheStrategy(DiskCacheStrategy.ALL)
+			.into(view);
+	}
+
+	public void setImageWithPlaceholder(Context context, ImageView view, String url) {
+		Glide.with(context)
+			.load(url)
+			.crossFade(300)
 			.placeholder(R.drawable.ic_face)
 			.diskCacheStrategy(DiskCacheStrategy.ALL)
 			.into(view);

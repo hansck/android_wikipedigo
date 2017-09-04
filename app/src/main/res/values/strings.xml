@@ -1,39 +1,47 @@
 <resources>
 	<string name="alphabetical">Alphabetical</string>
-	<string name="app_name" translatable="false">IGO Mania</string>
+	<string name="app_name" translatable="false">Wikipedigo</string>
 	<string name="ascending">Ascending</string>
+	<string name="cancel">Cancel</string>
 	<string name="date">Date</string>
 	<string name="descending">Descending</string>
 	<string name="done">done</string>
+	<string name="failed_request_general">Oops! Something went wrong!</string>
 	<string name="favorite">Favorite</string>
+	<string name="favorite_run_out">Ooops. It seems your favorites gallery is full.\nYou can watch a video from our sponsors to get 5 more.\nPlease support us to bring you the best IGO Experience!</string>
 	<string name="gallery">Gallery</string>
 	<string name="latest">Latest</string>
 	<string name="less_popular">Less popular</string>
 	<string name="most_popular">Most popular</string>
+	<string name="no_ads">Sorry. No ads available for now</string>
 	<string name="no_internet">Ooops. No internet connection</string>
 	<string name="no_internet_short">No internet connection</string>
+	<string name="no_internet_alert">Please check your internet connection</string>
 	<string name="oldest">Oldest</string>
 	<string name="oops">Ooops!</string>
 	<string name="others">Others</string>
 	<string name="popularity">Popularity</string>
 	<string name="retry">Retry</string>
 	<string name="share">Share</string>
-	<string name="shared_notice">Shared from IGO Mania</string>
+	<string name="shared_notice">Shared from Wikipedigo with love</string>
 	<string name="shared_success">Successfully shared!</string>
 	<string name="shared_failed">Sorry. There is something wrong and we cannot share this picture</string>
 	<string name="sort_by">Sorting By</string>
 	<string name="sort_from">Sorting From</string>
 	<string name="sort_igo">Sort IGO</string>
+	<string name="sure">Sure</string>
 	<string name="text_igo_not_found">IGO not found</string>
 	<string name="text_search_igo">Search IGO</string>
+	<string name="timeline">Timeline</string>
 
 	<string name="facebook" translatable="false">Facebook</string>
 	<string name="facebook_app_id" translatable="false">1210309672410032</string>
 	<string name="instagram" translatable="false">Instagram</string>
-	<string name="list_banner" translatable="false">ca-app-pub-1498994788218568/6311883539</string>
-	<string name="list_interstitial" translatable="false">ca-app-pub-1498994788218568/7788616733</string>
 	<string name="twitter" translatable="false">Twitter</string>
-	<string name="twitter_consumer_key" translatable="false">dcKniATiTjQ0dRaeyW4CEgc4Y</string>
-	<string name="twitter_consumer_secret" translatable="false">gdOuwFVt2EvUhNiEwrXsnfgurKlyEmqKKEtgTldpAnI6d45uTX</string>
 	<string name="path" translatable="false">Path</string>
+
+	<string name="ads_app_id" translatable="false">ca-app-pub-1498994788218568/4835150330</string>
+	<string name="ads_banner" translatable="false">ca-app-pub-1498994788218568/6311883539</string>
+	<string name="ads_interstitial" translatable="false">ca-app-pub-1498994788218568/7788616733</string>
+	<string name="ads_reward" translatable="false">ca-app-pub-1498994788218568/4107067250</string>
 </resources>

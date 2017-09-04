@@ -1,4 +1,4 @@
-package com.wikipedi.wikipedigo.model;
+package com.wikipedi.wikipedigo.model.object;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

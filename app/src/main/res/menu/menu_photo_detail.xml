@@ -8,32 +8,8 @@
 		app:showAsAction="always"/>
 
 	<item
-		android:id="@+id/action_facebook"
+		android:id="@+id/action_share"
 		android:icon="@drawable/ic_share"
-		android:title="@string/facebook"
-		app:showAsAction="never"/>
-
-	<item
-		android:id="@+id/action_twitter"
-		android:icon="@drawable/ic_share"
-		android:title="@string/twitter"
-		app:showAsAction="never"/>
-
-	<item
-		android:id="@+id/action_instagram"
-		android:icon="@drawable/ic_share"
-		android:title="@string/instagram"
-		app:showAsAction="never"/>
-
-	<item
-		android:id="@+id/action_path"
-		android:icon="@drawable/ic_share"
-		android:title="@string/path"
-		app:showAsAction="never"/>
-
-	<item
-		android:id="@+id/action_others"
-		android:icon="@drawable/ic_share"
-		android:title="@string/others"
-		app:showAsAction="never"/>
+		android:title="@string/share"
+		app:showAsAction="always"/>
 </menu>

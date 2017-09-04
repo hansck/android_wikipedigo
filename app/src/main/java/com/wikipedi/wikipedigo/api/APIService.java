@@ -1,15 +1,12 @@
 package com.wikipedi.wikipedigo.api;
 
-import android.util.SparseArray;
-
 import java.util.List;
 import java.util.Map;
 
-import com.wikipedi.wikipedigo.model.HiddenIgo;
-import com.wikipedi.wikipedigo.model.Photo;
+import com.wikipedi.wikipedigo.model.object.HiddenIgo;
+import com.wikipedi.wikipedigo.model.object.Photo;
 import retrofit2.Call;
 import retrofit2.http.GET;
-import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 
 /**

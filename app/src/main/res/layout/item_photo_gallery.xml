@@ -2,23 +2,23 @@
 <RelativeLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:id="@+id/background"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:background="@drawable/clickable_bg"
+	android:padding="@dimen/margin_tiny"
 	tools:ignore="ContentDescription">
+
+	<ProgressBar
+		android:id="@+id/progress"
+		android:layout_width="@dimen/progress_bar_small"
+		android:layout_height="@dimen/progress_bar_small"
+		android:layout_centerInParent="true"
+		android:visibility="visible"/>
 
 	<ImageView
 		android:id="@+id/photo"
-		android:layout_width="match_parent"
-		android:layout_height="@dimen/item_photo_slide"
-		android:scaleType="fitCenter"/>
-
-	<uk.co.jakelee.vidsta.VidstaPlayer
-		android:id="@+id/video"
-		android:visibility="gone"
-		app:autoPlay="false"
-		app:fullScreenButtonVisible="false"
-		app:fullScreenButtonEnabled="false"
-		android:layout_width="wrap_content"
-		android:layout_height="@dimen/item_photo_slide" />
+		android:layout_width="@dimen/item_photo_list_width"
+		android:layout_height="@dimen/item_photo_list_height"
+		android:scaleType="centerCrop"/>
 </RelativeLayout>

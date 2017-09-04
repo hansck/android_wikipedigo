@@ -18,7 +18,7 @@ public class CacheInterceptor implements Interceptor {
 	@Override
 	public Response intercept(Chain chain) throws IOException {
 		Request request = chain.request();
-		if (ConnectivityUtils.getInstance().isNetworkConnected()) {
+		if (ConnectivityUtil.getInstance().isNetworkConnected()) {
 			request = request.newBuilder().
 					removeHeader("pragma").
 					removeHeader("Cache-Control").

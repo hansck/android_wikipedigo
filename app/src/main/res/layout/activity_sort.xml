@@ -11,9 +11,9 @@
 
 	<TextView
 		android:id="@+id/textView2"
-		style="@style/SectionText"
+		style="@style/SubheadingMedium"
 		android:layout_gravity="center_vertical"
-		android:background="@color/colorPrimary"
+		android:background="@color/color_primary"
 		android:gravity="center_vertical"
 		android:padding="@dimen/activity_horizontal_margin"
 		android:text="@string/sort_by"
@@ -27,8 +27,8 @@
 		android:layout_height="wrap_content"
 		android:orientation="horizontal"
 		android:padding="@dimen/activity_horizontal_margin"
-		android:paddingLeft="@dimen/item_padding"
-		android:paddingRight="@dimen/item_padding">
+		android:paddingLeft="@dimen/margin_small"
+		android:paddingRight="@dimen/margin_small">
 
 		<ImageView
 			android:layout_width="wrap_content"
@@ -39,15 +39,13 @@
 
 		<TextView
 			android:id="@+id/textView"
-			style="@style/SectionText"
+			style="@style/BodyMedium"
 			android:layout_gravity="center_vertical"
-			android:layout_marginLeft="@dimen/item_padding"
-			android:layout_marginStart="@dimen/item_padding"
+			android:layout_marginLeft="@dimen/margin_normal"
+			android:layout_marginStart="@dimen/margin_normal"
 			android:gravity="center_vertical"
 			android:text="@string/date"
-			android:textAllCaps="true"
-			android:textColor="@color/dark_grey"
-			android:textStyle=""/>
+			android:textAllCaps="true"/>
 	</LinearLayout>
 
 	<View
@@ -62,8 +60,8 @@
 		android:layout_height="wrap_content"
 		android:orientation="horizontal"
 		android:padding="@dimen/activity_horizontal_margin"
-		android:paddingLeft="@dimen/item_padding"
-		android:paddingRight="@dimen/item_padding">
+		android:paddingLeft="@dimen/margin_small"
+		android:paddingRight="@dimen/margin_small">
 
 		<ImageView
 			android:layout_width="wrap_content"
@@ -73,14 +71,13 @@
 			android:src="@drawable/ic_popular"/>
 
 		<TextView
-			style="@style/SectionText"
+			style="@style/BodyMedium"
 			android:layout_gravity="center_vertical"
-			android:layout_marginLeft="@dimen/item_padding"
-			android:layout_marginStart="@dimen/item_padding"
+			android:layout_marginLeft="@dimen/margin_normal"
+			android:layout_marginStart="@dimen/margin_normal"
 			android:gravity="center_vertical"
 			android:text="@string/popularity"
-			android:textAllCaps="true"
-			android:textColor="@color/dark_grey"/>
+			android:textAllCaps="true"/>
 	</LinearLayout>
 
 	<View
@@ -95,8 +92,8 @@
 		android:layout_height="wrap_content"
 		android:orientation="horizontal"
 		android:padding="@dimen/activity_horizontal_margin"
-		android:paddingLeft="@dimen/item_padding"
-		android:paddingRight="@dimen/item_padding">
+		android:paddingLeft="@dimen/margin_small"
+		android:paddingRight="@dimen/margin_small">
 
 		<ImageView
 			android:layout_width="wrap_content"
@@ -106,14 +103,13 @@
 			android:src="@drawable/ic_alphabetic"/>
 
 		<TextView
-			style="@style/SectionText"
+			style="@style/BodyMedium"
 			android:layout_gravity="center_vertical"
-			android:layout_marginLeft="@dimen/item_padding"
-			android:layout_marginStart="@dimen/item_padding"
+			android:layout_marginLeft="@dimen/margin_normal"
+			android:layout_marginStart="@dimen/margin_normal"
 			android:gravity="center_vertical"
 			android:text="@string/alphabetical"
-			android:textAllCaps="true"
-			android:textColor="@color/dark_grey"/>
+			android:textAllCaps="true"/>
 	</LinearLayout>
 
 	<View
@@ -123,9 +119,9 @@
 		android:background="@color/divider"/>
 
 	<TextView
-		style="@style/SectionText"
+		style="@style/SubheadingMedium"
 		android:layout_gravity="center_vertical"
-		android:background="@color/colorPrimary"
+		android:background="@color/color_primary"
 		android:gravity="center_vertical"
 		android:padding="@dimen/activity_horizontal_margin"
 		android:text="@string/sort_from"
@@ -148,23 +144,21 @@
 
 		<TextView
 			android:id="@+id/ascending"
-			style="@style/SectionText"
+			style="@style/BodyMedium"
 			android:layout_gravity="center_vertical"
 			android:layout_weight="0.5"
 			android:gravity="center_horizontal"
 			android:padding="@dimen/activity_horizontal_margin"
-			android:textAllCaps="true"
-			android:textColor="@color/dark_grey"/>
+			android:textAllCaps="true"/>
 
 		<TextView
 			android:id="@+id/descending"
-			style="@style/SectionText"
+			style="@style/BodyMedium"
 			android:layout_gravity="center_vertical"
 			android:layout_weight="0.5"
 			android:gravity="center_horizontal"
 			android:padding="@dimen/activity_horizontal_margin"
-			android:textAllCaps="true"
-			android:textColor="@color/dark_grey"/>
+			android:textAllCaps="true"/>
 	</LinearLayout>
 
 	<View

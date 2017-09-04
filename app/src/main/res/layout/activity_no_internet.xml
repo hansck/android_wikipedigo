@@ -19,10 +19,10 @@
 		android:layout_alignParentBottom="true"
 		android:layout_centerHorizontal="true"
 		android:layout_marginTop="@dimen/activity_vertical_margin"
-		android:background="@color/colorAccent"
+		android:background="@color/color_accent"
 		android:text="@string/retry"
 		android:textColor="@color/white"
-		android:textSize="@dimen/text_header"
+		android:textSize="@dimen/text_subheading"
 		android:textStyle="bold"/>
 
 	<RelativeLayout
@@ -42,15 +42,15 @@
 
 		<TextView
 			android:id="@+id/oops"
-			style="@style/TitleText"
+			style="@style/SubheadingMedium"
 			android:layout_below="@id/icon"
-			android:layout_marginTop="@dimen/item_padding"
+			android:layout_marginTop="@dimen/margin_normal"
 			android:gravity="center"
 			android:text="@string/oops"/>
 
 		<TextView
 			android:id="@+id/remarkText"
-			style="@style/TitleText"
+			style="@style/SubheadingMedium"
 			android:layout_below="@id/oops"
 			android:layout_marginTop="5dp"
 			android:gravity="center"

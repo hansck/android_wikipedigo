@@ -1,16 +1,15 @@
-package com.wikipedi.wikipedigo.container;
+package com.wikipedi.wikipedigo.model.manager;
 
 import com.wikipedi.wikipedigo.api.APIRequest;
 import com.wikipedi.wikipedigo.api.BaseResponse;
-import com.wikipedi.wikipedigo.model.Favorite;
-import com.wikipedi.wikipedigo.model.HiddenIgo;
-import com.wikipedi.wikipedigo.model.Photo;
-import com.wikipedi.wikipedigo.model.UserPreferences;
+import com.wikipedi.wikipedigo.model.object.Favorite;
+import com.wikipedi.wikipedigo.model.object.HiddenIgo;
+import com.wikipedi.wikipedigo.model.object.Photo;
+import com.wikipedi.wikipedigo.model.object.UserPreferences;
 import com.wikipedi.wikipedigo.util.BaseRunnable;
 import com.wikipedi.wikipedigo.util.Comparators;
 import com.wikipedi.wikipedigo.util.Constants;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,19 +32,19 @@ import static io.realm.Case.INSENSITIVE;
  * Created by E460 on 17/01/2017.
  */
 
-public class PhotosContainer {
+public class PhotosManager {
 
 	private RealmList<Photo> photos = new RealmList<>();
 	private RealmList<Photo> favorites = new RealmList<>();
 	private RealmList<HiddenIgo> hiddenIgos = new RealmList<>();
 	private Realm realm = Realm.getDefaultInstance();
-	private static PhotosContainer instance = new PhotosContainer();
+	private static PhotosManager instance = new PhotosManager();
 
-	public PhotosContainer() {
+	public PhotosManager() {
 
 	}
 
-	public static PhotosContainer getInstance() {
+	public static PhotosManager getInstance() {
 		return instance;
 	}
 
@@ -59,7 +58,7 @@ public class PhotosContainer {
 					photos = new RealmList<>(fetchedPhotos.toArray(new Photo[fetchedPhotos.size()]));
 					if (realm.where(Photo.class).count() != photos.size()) {
 						insertIgo();
-						getAllIgo();
+						getIgoByPerson();
 					}
 				}
 				onSuccess.run();
@@ -68,7 +67,7 @@ public class PhotosContainer {
 			@Override
 			public void onFailure(Call<BaseResponse<List<Photo>>> call, Throwable t) {
 				t.printStackTrace();
-				getAllIgo();
+				getIgoByPerson();
 				onFailure.run();
 			}
 		});
@@ -135,13 +134,17 @@ public class PhotosContainer {
 		realm.commitTransaction();
 	}
 
-	public void getAllIgo() {
+	public void getIgoByPerson() {
 		photos.clear();
 		RealmResults<Photo> results = realm.where(Photo.class)
 			.findAllSorted(Constants.Photo.CREATED_AT, Sort.DESCENDING).distinct(Constants.Photo.NAME);
-//		photos.addAll(getDistinctPhotos(results));
 		photos.addAll(results);
-//		sortIgo();
+	}
+
+	public void getTimelineIgo() {
+		photos.clear();
+		RealmResults<Photo> results = realm.where(Photo.class).findAllSorted(Constants.Photo.CREATED_AT, Sort.DESCENDING);
+		photos.addAll(results);
 	}
 
 	public void getAllHiddenIgo() {

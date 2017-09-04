@@ -5,6 +5,7 @@
 	android:id="@+id/swipeRefreshLayout"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
+	android:background="@color/white"
 	android:paddingLeft="@dimen/margin_tiny"
 	android:paddingRight="@dimen/margin_tiny"
 	tools:context="com.wikipedi.wikipedigo.activity.MainActivity_">
@@ -21,9 +22,9 @@
 			android:layout_height="wrap_content"
 			android:layout_alignParentBottom="true"
 			android:layout_centerHorizontal="true"
-			android:layout_marginTop="@dimen/item_padding"
+			android:layout_marginTop="@dimen/margin_small"
 			ads:adSize="BANNER"
-			ads:adUnitId="@string/list_banner">
+			ads:adUnitId="@string/ads_banner">
 		</com.google.android.gms.ads.AdView>
 
 		<android.support.v7.widget.RecyclerView
@@ -31,7 +32,8 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:layout_above="@id/adView"
-			android:layout_alignParentTop="true"/>
+			android:layout_alignParentTop="true"
+			android:layout_marginTop="@dimen/margin_small"/>
 
 		<TextView
 			android:id="@+id/alert"

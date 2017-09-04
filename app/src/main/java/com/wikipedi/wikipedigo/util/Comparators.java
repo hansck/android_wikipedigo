@@ -1,6 +1,6 @@
 package com.wikipedi.wikipedigo.util;
 
-import com.wikipedi.wikipedigo.model.Photo;
+import com.wikipedi.wikipedigo.model.object.Photo;
 
 import java.util.Comparator;
 

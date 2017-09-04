@@ -29,7 +29,7 @@ public class NoInternetActivity extends AppCompatActivity {
 			finish();
 		} else {
 			View view = this.getWindow().getDecorView().findViewById(R.id.content);
-			Snackbar.make(view, "Sorry! Not connected to internet", Snackbar.LENGTH_LONG).show();
+			Snackbar.make(view, getString(R.string.no_internet_alert), Snackbar.LENGTH_LONG).show();
 		}
 	}
 }

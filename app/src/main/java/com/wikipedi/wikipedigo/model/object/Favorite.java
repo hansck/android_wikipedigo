@@ -1,4 +1,4 @@
-package com.wikipedi.wikipedigo.model;
+package com.wikipedi.wikipedigo.model.object;
 
 import io.realm.RealmModel;
 import io.realm.RealmObject;
